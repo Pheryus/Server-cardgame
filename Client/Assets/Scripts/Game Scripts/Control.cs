@@ -90,7 +90,8 @@ public class Control {
     }
 
     public void addCardToHand(int id, string type, int cost, int dmg, int life) {
-        Card card = new Card(id, type, cost, dmg, life, player_id);
+        Card card = new Card(id, "carta", type, cost, dmg, life, 1, 0);
+        card.setPlayerId(this.player_id);
         hand.AddCard(card);
     }
 
@@ -136,10 +137,17 @@ public class Control {
     }
 
     public Card getCardById(int id) {
-        if (id == 5)
-            return new Card(id, "Magia", 7, -1, -1, player_turn);
-        else
-            return new Card(id, "Magia", 4, -1, -1, player_turn);
+        if (id == 5) {
+            Card card = new Card(id, "carta", "Magia", 7, -1, -1, 0, 0);
+            card.setPlayerId(player_id);
+            return card;
+        }
+         
+        else{ 
+            Card card = new Card(id, "carta", "Magia", 4, -1, -1, 0, 0 );
+            card.setPlayerId(player_id);
+            return card;
+        }
     }
 
 

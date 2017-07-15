@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-interface ICommand {
+public interface ICommand {
     void execute(object param);
 }
 
@@ -14,7 +14,7 @@ public class Card {
     private int id, cost, overcost = 0, cooldown = 1, actual_cooldown;
     private int? damage, life;
 
-    private ICommand onPlayEffect;
+    public ICommand onPlayEffect;
     
 
     private string name, type;
@@ -30,25 +30,32 @@ public class Card {
     private int player_controller;
 
     //construct
-    public Card (int id, string type, int cost, int damage, int life, int player_controller) {
+    public Card (int id, string name, string type, int cost, int damage, int life, int cooldown, int overcost) {
         this.id = id;
         this.cost = cost;
         this.actual_cooldown = 0;
+        this.name = name;
+
+        this.cooldown = cooldown;
+        this.overcost = overcost;
 
         this.damage = damage;
         this.life = life;
         this.immuny = false;
         this.invisible = false;
-        this.player_controller = player_controller;
-        actual_damage = this.damage.GetValueOrDefault();
-        actual_life = this.life.GetValueOrDefault();
-        siege_dmg = 1;
-        //this.name = name;
+        this.actual_damage = this.damage.GetValueOrDefault();
+        this.actual_life = this.life.GetValueOrDefault();
+        this.siege_dmg = 1;
+
         this.type = type;
 
         //getting effects
         //eff = CardEffects.getEffect(id, type);
      
+    }
+
+    public void setPlayerId(int player_id) {
+        this.player_controller = player_id;
     }
 
     public bool isMagic() {

@@ -295,7 +295,7 @@ public class Serverino : MonoBehaviour {
     private void enemyPlayMagic(JSONObject json) {
         int id = (int)json.GetField("id").n;
         Card card = control.getCardById(id);
-
+        card.setPlayerId(control.getOpponentId());
         JSONObject positionJSON = json.GetField("position");
         Position position = null;
 

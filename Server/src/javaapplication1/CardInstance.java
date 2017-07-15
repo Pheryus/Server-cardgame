@@ -24,6 +24,8 @@ public final class CardInstance {
     
     static Card flamestrike(){
         Card card = new Card(5, "Flamestrike", "Magia", 7, -1, -1, 1, 0);
+        
+        
         card.onPlayEffect = new ICommand() {
             @Override
             public void execute(Object param) {

@@ -139,7 +139,8 @@ public class Field {
 
    
     public void createCard(int id, int cost, int dmg, int life, Position pos, int player_id) {
-        Card card = new Card(id, "Personagem", cost, dmg, life, player_id);
+        Card card = new Card(id, "carta", "Personagem", cost, dmg, life, 0, 0);
+        card.setPlayerId(player_id);
 
         card.setPosition(pos);
 
