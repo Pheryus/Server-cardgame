@@ -18,25 +18,42 @@ public class Deck {
     public ArrayList cards;
     private int player_id;
     
-    public Deck (int player_id){
+    private Game game_instance;
+    
+    public Deck (int player_id, Game game){
         cards = new ArrayList();
+        this.game_instance = game;
         this.player_id = player_id;
         this.createDeck();
-
     }
 
+    
     void createDeck(){
-        cards.add(new Card(0, "Yeti", "Personagem", 4, 4, 5, player_id));
-        cards.add(new Card(1, "Raptor", "Personagem", 2, 3, 2, player_id));
+        cards.add(new Card(0, "Yeti", "Personagem", 4, 4, 5, 1, 0));
+        cards.add(new Card(1, "Raptor", "Personagem", 2, 3, 2, 1, 0));
 
-        cards.add(new Card(2, "Crocolisk", "Personagem", 2, 2, 3, player_id));
+        cards.add(new Card(2, "Crocolisk", "Personagem", 2, 2, 3, 1, 0));
         
-        cards.add(new Card(3, "Ogre", "Personagem", 6, 6, 7, player_id));        
-        cards.add(new Card(4, "War Golem", "Personagem", 7, 7, 7, player_id));
+        cards.add(new Card(3, "Ogre", "Personagem", 6, 6, 7, 1, 0));        
+        cards.add(new Card(4, "War Golem", "Personagem", 7, 7, 7, 1, 0));
         
-        cards.add(new Card(5, "Flamestrike", "Magia", 7, -1, -1, player_id));
+        cards.add(CardInstance.fireball());
+        cards.add(CardInstance.flamestrike());
+        
+        this.setPlayerIdDeck();
+        
     }
     
+    
+    
+    private void setPlayerIdDeck(){
+        for (int i = 0; i < cards.size(); i++){
+            Card card = (Card)cards.get(i);
+            card.setPlayer_id(player_id);
+            card.setGame(game_instance);
+        }
+    }
+
     /*
     "hand" : {
         "card1" : {
@@ -59,7 +76,7 @@ public class Deck {
             card_list.put("id", id);
             card_list.put("type", ((Card)(cards.get(i))).getType());
             card_list.put("cost", ((Card)(cards.get(i))).getCost());
-            card_list.put("dmg", ((Card)(cards.get(i))).getActual_damage());
+            card_list.put("dmg", ((Card)(cards.get(i))).getActual_attack());
             card_list.put("life", ((Card)(cards.get(i))).getActual_life());
             
             jsonArray.put("card" + i, card_list);
@@ -110,13 +127,6 @@ public class Deck {
         }
         return null;
     }
-    
-    Card card1() {
-        return new Card(0, "Yeti", "Personagem", 4, 4, 5, player_id);
-    }
-
-    Card card2() {
-        return new Card(1, "Raptor", "Personagem", 2, 3, 2, player_id);
-    }
+   
     
 }

@@ -7,7 +7,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
     public Transform parentToReturnTo = null;
     GameObject placeholder = null;
-    public bool played=false;
+    public bool played = false;
     public string cardIs;
 
     Control control = null;
@@ -34,7 +34,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             if (control.isPlayerTurn() == false)
                 return;
 
-            if (control.getMana().checkIfItsPlayable(c) && played == false && c.canPlay() == true) {
+            if (control.checkMana(c) && played == false && c.canPlay() == true) {
                 this.dragCard();
             }
         }

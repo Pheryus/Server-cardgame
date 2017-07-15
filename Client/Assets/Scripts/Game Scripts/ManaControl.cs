@@ -45,7 +45,7 @@ public class ManaControl {
     /// </summary>
     /// <param name="cost">custo da carta jogada</param>
     public void spendMana(int cost) {
-        players_mana[control.getPlayerId()] -= cost;
+        players_mana[control.getPlayerTurn()] -= cost;
     }
 
     public int getPlayerMana() {
@@ -64,7 +64,6 @@ public class ManaControl {
     private void checkAdditionalMana() {
         //se o novo turno voltou ao player principal
         if (control.getPlayerTurn() == 1 && mana_per_turn < mana_max_per_turn) {
-            Debug.Log("ganha + mana");
             mana_per_turn++;
         }
     }

@@ -42,7 +42,7 @@ public class BattleControl {
         attacker.setCanAttack(false);
     }
 
-    private void checkDeath(Card card) {
+    public void checkDeath(Card card) {
         if (card.getActualLife() <= 0) {
             Position position = card.getPosition();
             field.removeCard(position);

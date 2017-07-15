@@ -25,12 +25,12 @@ public class CardInstance : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         GameObject parent;
 
         string lane = "";
-        if (pos.y == 0) 
+        if (pos.line == 0) 
             lane = "front";
         else
             lane = "back";
 
-        parent = GameObject.Find("opponent" + lane + (pos.x + 1).ToString());
+        parent = GameObject.Find("opponent" + lane + (pos.column + 1).ToString());
         this.gameObject.transform.SetParent(parent.transform, false);
     }
 

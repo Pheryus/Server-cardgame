@@ -14,8 +14,18 @@ public class Hand : MonoBehaviour {
     }
 
     public void AddCard(Card card) {
-        
+
         GameObject go = (GameObject)Instantiate(prefab, Vector3.zero, Quaternion.identity);
+
+        //caso for a fireball
+        if (card.getID() == 6) {
+            go.GetComponent<Draggable>().enabled = false;
+            go.GetComponent<EffectArrowUI>().enabled = true;
+        }
+        else
+            go.GetComponent<EffectArrowUI>().enabled = false;
+
+
         go.GetComponent<CardInstance>().setCard(card);
         go.GetComponent<CardInstance>().setParent(this.gameObject.transform);
         go.GetComponent<CardInstance>().setImage();

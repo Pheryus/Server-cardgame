@@ -32,30 +32,54 @@ public class ActionsControl {
         this.deck_players = game.getPlayerDecks();
     }
     
-    void clientCastSpell(String message, int clientid, JSONObject spell, int players_turn){
+    private void playSpell(Card card, int client_id, JSONObject spellJSON) throws JSONException{
         
-        int card_id = Integer.parseInt(spell.optString("id"));
+        Position target_position = null;
+        
+        boolean valid_card = true;
+        
+        
+        try {
+            JSONObject json_position = spellJSON.getJSONObject("position");
+            target_position = this.jsonToPosition(json_position);
+        }
+        catch (JSONException e){
+            
+        }
+        Card target_card = null;
+        
+        if (target_position != null){
+            target_card = this.getCardFromField(target_position);
+            if (target_card == null)
+                valid_card = false;
+        }
+
+        if (valid_card == true){
+            card.onPlayEffect.execute(card);
+            manaControl.spendMana(card, client_id);
+            sendToClient("Play spell" + Integer.toString(client_id) + " ack", client_id);
+
+            //cria a mensagem do monstro criado + a mana atual do jogador que jogou ela
+            String new_message = JSONController.enemyPlayMagic(card.getId(), card, target_position).toString();
+
+            //pega o id do oponente
+            int opponentid = (client_id + 1) % 2;
+
+            sendToClient(new_message, opponentid);
+        }
+    }
+    
+    
+    public void clientCastSpell(String message, int clientid, JSONObject spellJSON, int players_turn) throws JSONException{
+        
+        int card_id = Integer.parseInt(spellJSON.optString("id"));
+        
         Card card = deck_players[players_turn].cardIsInDeck(card_id);
+        
         //se carta existir na mão do player
         if (card != null){
-            if (manaControl.checkAvaliableMana(card, players_turn)){
-                JSONObject position = spell.optJSONObject("position"); 
-                if (position != null){
-                    int line = Integer.parseInt(position.optString("line"));
-                    int column = Integer.parseInt(position.optString("column"));
-                    int side = Integer.parseInt(position.optString("side"));
-                    if (fieldControl.haveTarget(side, line, column)){
-
-                    }
-                    else{
-                        System.out.println("posicao invalida");
-                        return;
-                    }
-                }
-                manaControl.spendMana(card, players_turn);
-
-                //ativa carta
-                //envia ack pro cliente
+            if (manaControl.checkAvaliableMana(card, players_turn) && isPlayerTurn(clientid, players_turn)){                
+                this.playSpell(card, players_turn, spellJSON);
             }
             else
                 System.out.println("sem mana suficiente");
@@ -66,7 +90,10 @@ public class ActionsControl {
 
     }
     
-    void clientAttack (int clientid, JSONObject attackMSG, int players_turn){   
+  
+    
+    
+    void clientAttack (int clientid, JSONObject attackMSG, int players_turn) throws JSONException{   
         
         //checa se é turno do jogador
         if (clientid != players_turn)
@@ -76,43 +103,42 @@ public class ActionsControl {
         int target_id = attackMSG.optInt("target_id");
         
         //pega posição do personagem aliado
-        JSONObject position = attackMSG.optJSONObject("attacker_position");
-        int line = position.optInt("line");
-        int column = position.optInt("column");
+        JSONObject json_position = attackMSG.getJSONObject("attacker_position");
+        Position position = this.jsonToPosition(json_position);
         
         //atacou direto
         if (target_id == -1){
-            if (creatureCanAttackDirectly(clientid, line, column)){
-                confirmedDirectAttack(clientid, line, column, attackMSG);
+            if (creatureCanAttackDirectly(position)){
+                confirmedDirectAttack(position, attackMSG);
             }
         }
         
         else {
-            //pega posição do inimigo
-            JSONObject target_position = attackMSG.optJSONObject("target_position");
-            System.out.println(attackMSG);
-            int target_line = target_position.optInt("line");
-            int target_column = target_position.optInt("column");
-            if (creatureCanAttack(clientid, line, column, target_line, target_column)){
-                System.out.println("pode atacar, comandante!");
-               confirmedAttack(clientid, line, column, target_line, target_column, attackMSG);
+            JSONObject target_json_position = attackMSG.getJSONObject("target_position");
+            Position target_position = this.jsonToPosition(target_json_position);
+            
+            if (creatureCanAttack(position, target_position)){
+               confirmedAttack(position, target_position, attackMSG);
             }
         }
     }
     
-    void confirmedAttack(int clientid, int line, int column, int target_line, int target_column, JSONObject attackMSG){
-         clients[clientid].sendToClient("Attack" + Integer.toString(clientid) + " ack");
-         Card attacker = getCardFromField(clientid, line, column);
-         int opponentid = game.getOpponentID(clientid);
-         Card target = getCardFromField(opponentid, target_line, target_column);
-         
-         if (attacker != null && target != null){
-            calculateBattle(attacker, target);
-            attacker.setAttack(false);
-            String attack_message = jsonController.enemyAttackCharacterJSON(attackMSG).toString();
-            sendToClient(attack_message, opponentid);
-            checkDeaths();
-         }
+    void confirmedAttack(Position attacker_position, Position target_position, JSONObject attackMSG){
+        int client_id = attacker_position.side;
+        clients[client_id].sendToClient("Attack" + Integer.toString(client_id) + " ack");
+
+        Card attacker = getCardFromField(attacker_position);
+        int opponentid = game.getOpponentID(client_id);
+        
+        Card target = getCardFromField(target_position);
+
+        if (attacker != null && target != null){
+           calculateBattle(attacker, target);
+           attacker.setAttack(false);
+           String attack_message = jsonController.enemyAttackCharacterJSON(attackMSG).toString();
+           sendToClient(attack_message, opponentid);
+           checkDeaths();
+        }
          
     }
     
@@ -154,9 +180,9 @@ public class ActionsControl {
         */
         
         if (attacker_take_damage)
-            attacker.reduceActual_life(target.getDamage());
+            attacker.takeDamage(target.getAttack());
         
-        target.reduceActual_life(attacker.getDamage());
+        target.takeDamage(attacker.getAttack());
         
     }
     
@@ -165,6 +191,7 @@ public class ActionsControl {
     }
     
     private Position jsonToPosition(JSONObject position){
+        System.out.println("leitao");
         if (position == null)
             return null;
         
@@ -254,47 +281,58 @@ public class ActionsControl {
      * @param column
      * @return 
      */
-    private boolean creatureCanAttackDirectly(int clientid, int line, int column){
-        Card card = getCardFromField(clientid, line, column);
-        int opponent_id = game.getOpponentID(clientid);
+    private boolean creatureCanAttackDirectly(Position position){
+        
+        Card card = getCardFromField(position);
+        int opponent_id = game.getOpponentID(position.side);
         if (card != null && card.isAble_to_attack()){
-            if (card.isRanged() == true && line == 0)
+            
+            Position front_creature = new Position (0, 2 - position.column, opponent_id);
+            
+            if (card.isRanged() == true && position.line == 0)
                 return true;
-            else if (card.isRanged() == false && line == 1)
+            else if (card.isRanged() == false && position.line == 1)
                 return false;
             //se não tiver ninguem na mesma coluna dele, pode atacar direto
-            else if (getCardFromField(opponent_id, 0, 2 - column) == null)
+            else if (getCardFromField(front_creature) == null)
                 return true;
         }
         return false;
     }
     
-    private Card getCardFromField(int clientid, int line, int column){
-        return fieldControl.getCardFromField(clientid, line, column);
+    private Card getCardFromField(Position position){
+        return fieldControl.getCardFromField(position);
     }
     
     //retorna true se a carta pode atacar
-    private boolean creatureCanAttack(int clientid, int line, int column, int targetline, int targetcolumn){
-        Card card = getCardFromField(clientid, line, column);
-        int opponent_id = game.getOpponentID(clientid);
-        System.out.println("Attacker " + card.getName());
-        Card target = getCardFromField(opponent_id, targetline, targetcolumn);
+    private boolean creatureCanAttack(Position position, Position target_position){
+        Card card = getCardFromField(position);
+        int opponent_id = game.getOpponentID(position.side);
+        
+        
+        Card target = getCardFromField(target_position);
+        
         System.out.println("Target " + target.getName());
+        
         if (card != null && card.isAble_to_attack() && target != null){
             //se estiver atras e nao for ranged, nao pode atacar
-            if (!card.isRanged() && line == 1)
+            if (!card.isRanged() && position.line == 1)
                 return false;
             
             //se for ranged e estiver na frente, ataca quaqluer um
-            else if (card.isRanged() && line == 0)
+            else if (card.isRanged() && position.line == 0)
                     return true;
             
             else {
+                
                 //se o alvo estiver na frente, pode atacar
-                if (targetline == 0)
+                if (target_position.line == 0)
                     return true;
                 //se o alvo estiver na backline, sem ninguem na frente pra protege-lo
-                else return targetcolumn == column && getCardFromField(opponent_id, 0, targetcolumn) == null;
+                else{
+                    Position front_creature = new Position (0, target_position.column, opponent_id);
+                    return target_position.column == position.column && getCardFromField(front_creature) == null;
+                }
             }
         }
             
@@ -305,16 +343,15 @@ public class ActionsControl {
         this.clients[client].sendToClient(message);
     }
     
-    private void confirmedDirectAttack(int clientid, int line, int column, JSONObject message){
-        int opponent_id = game.getOpponentID(clientid);
-        Card attacker = getCardFromField(clientid, line, column);
+    private void confirmedDirectAttack(Position position, JSONObject message){
+        int opponent_id = game.getOpponentID(position.side);
+        Card attacker = getCardFromField(position);
         if (attacker != null){
             attacker.setAttack(false);
-            System.out.println("Atacou diretamente!");
             this.lifeControl.damagePlayer(attacker, opponent_id);
             int player_life = this.lifeControl.getPlayerLife(opponent_id);
             
-            sendToClient("Attack" + Integer.toString(clientid) + " ack", clientid);
+            sendToClient("Attack" + Integer.toString(position.side) + " ack", position.side);
             
             String attack_message = JSONController.enemyAttackPlayerJSON(message, player_life).toString();
             sendToClient(attack_message, opponent_id);

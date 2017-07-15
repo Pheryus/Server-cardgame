@@ -7,33 +7,73 @@ package javaapplication1;
  */
 public class Card {
     
-    private int id;
-    private int damage, life, cost;
+    ICommand onPlayEffect;
+    ICommand onDeathEffect;
     
-    private int actual_damage, actual_life, actual_siegedmg;
+    private Game game_instance;
+
+    private int id;
+    private int attack, life, cost;
+    
+    private int actual_attack, actual_life, actual_siegedmg;
     
     private boolean able_to_attack, ranged;
     
     private String name, type, text;
 
-    public int getDamage() {
-        return damage;
+    public Card (int id, String name, String type,  int cost, int attack, int life, int cooldown, int overcost){
+        this.id = id;
+        this.type = type;
+        this.name = name;
+        this.cooldown = 1;
+        this.attack = attack;
+        this.life = life;
+        this.actual_attack = attack;
+        this.actual_cooldown = 0;
+        this.cost = cost;
+        this.actual_life = life;
+        this.actual_siegedmg = 1;
+        this.ranged = false;
+        this.able_to_attack = false;
+    }
+    
+    
+    
+    public void setGame(Game game){
+        this.game_instance = game;
+    }
+    
+    
+    public int getAttack() {
+        return attack;
     }
 
-    public void setDamage(int damage) {
-        this.damage = damage;
+    public void setAttack(int attack) {
+        this.attack = attack;
     }
 
     public int getLife() {
         return life;
     }
 
+    public Game getGameInstance(){
+        return this.game_instance;
+    }
+    
+    public FieldControl getFieldControl(){
+        return this.game_instance.getFieldControl();
+    }
+    
     public void setLife(int life) {
         this.life = life;
     }
     
-    public void reduceActual_life(int dmg){
+    public void takeDamage(int dmg){
         this.actual_life -= dmg;
+        if (this.actual_life <= 0){
+            if (this.onDeathEffect != null)
+                this.onDeathEffect.execute(null);
+        }
     }
     
     public boolean isDead(){
@@ -53,16 +93,17 @@ public class Card {
             this.actual_cooldown -= 1;
     }
     
+    
     public void setCost(int cost) {
         this.cost = cost;
     }
 
-    public int getActual_damage() {
-        return actual_damage;
+    public int getActual_attack() {
+        return actual_attack;
     }
 
-    public void setActual_damage(int actual_damage) {
-        this.actual_damage = actual_damage;
+    public void setActual_attack(int actual_attack) {
+        this.actual_attack = actual_attack;
     }
 
     public int getActual_life() {
@@ -147,22 +188,7 @@ public class Card {
     
     private int player_id, cooldown, actual_cooldown;
     
-    public Card (int id, String name, String type,  int cost, int damage, int life, int player_id){
-        this.id = id;
-        this.type = type;
-        this.name = name;
-        this.cooldown = 1;
-        this.damage = damage;
-        this.life = life;
-        this.actual_damage = damage;
-        this.actual_cooldown = 0;
-        this.cost = cost;
-        this.actual_life = life;
-        this.actual_siegedmg = 1;
-        this.ranged = false;
-        this.able_to_attack = false;
-        this.player_id = player_id;
-    }
+
     
     public boolean canAttack(){
         return this.able_to_attack;
@@ -176,8 +202,16 @@ public class Card {
         return this.player_id;
     }
     
+    
+    public void onPlayed(){
+        if (this.onPlayEffect != null)
+            onPlayEffect.execute(null);
+    }
+    
+    
+    
     public void reset(){
-        this.actual_damage = this.damage;
+        this.actual_attack = this.attack;
         this.actual_life = this.life;
         this.able_to_attack = false;
         this.actual_cooldown = this.cooldown;

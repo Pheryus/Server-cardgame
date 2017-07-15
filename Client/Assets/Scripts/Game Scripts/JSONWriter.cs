@@ -36,34 +36,33 @@ public static class JSONWriter {
 
 
     //cria json para a magia	
-    static public JSONObject TryPlayMagic(int magic_id) {
+    static public JSONObject tryPlayMagic(int magic_id) {
         JSONObject json = new JSONObject();
         JSONObject id_magic = new JSONObject();
-        id_magic.AddField("id", magic_id.ToString());
+        id_magic.AddField("id", magic_id);
         json.AddField("playspell", id_magic);
         return json;
     }
 
     //cria json para o alvo
-    public static JSONObject SetTarget(Position pos, int side = -1) {
+    public static JSONObject setTarget(Position pos) {
         JSONObject target = new JSONObject();
-        target.AddField("line", pos.y);
-        target.AddField("column", pos.x);
-        if (side >= 0)
-            target.AddField("side", side);
+        target.AddField("line", pos.line);
+        target.AddField("column", pos.column);
+        target.AddField("side", pos.side);
         return target;
     }
 
 
 
-    public static JSONObject PlayCharacterJSON(Card card, int playerid, int hand_index, Position pos) {
+    public static JSONObject playCharacterJSON(Card card, int playerid, int hand_index, Position pos) {
         int id = card.getID();
         JSONObject cardJSON = new JSONObject();
         JSONObject json = new JSONObject();
         json.AddField("id", id);
         json.AddField("player_id", playerid);
         json.AddField("hand_id", hand_index);
-        JSONObject posJSON = JSONWriter.SetTarget(pos, playerid);
+        JSONObject posJSON = JSONWriter.setTarget(pos);
 
         json.AddField("position", posJSON);
         cardJSON.AddField("playcreature", json);
@@ -75,7 +74,7 @@ public static class JSONWriter {
         json.AddField("attacker_id", attacker_id.ToString());
         json.AddField("target_id", -1);
 
-        JSONObject attacker_positionJSON = JSONWriter.SetTarget(attacker_pos);
+        JSONObject attacker_positionJSON = JSONWriter.setTarget(attacker_pos);
 
         json.AddField("attacker_position", attacker_positionJSON);
 
@@ -89,11 +88,11 @@ public static class JSONWriter {
         json.AddField("attacker_id", attacker_id.ToString());
         json.AddField("target_id", target_id.ToString());
 
-        JSONObject attacker_positionJSON = JSONWriter.SetTarget(attacker_pos);
+        JSONObject attacker_positionJSON = JSONWriter.setTarget(attacker_pos);
         json.AddField("attacker_position", attacker_positionJSON);
 
         if (target_pos != null) {
-            JSONObject target_positionJSON = JSONWriter.SetTarget(target_pos);
+            JSONObject target_positionJSON = JSONWriter.setTarget(target_pos);
             json.AddField("target_position", target_positionJSON);
         }
 

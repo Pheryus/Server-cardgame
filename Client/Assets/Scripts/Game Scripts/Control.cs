@@ -3,18 +3,19 @@ using System.Collections;
 
 
 public class Control {
-    private int dsize = 40;
 
     private int player_id = 0;
     private int opponent_id = 1;
     private int player_turn = 0;
-    private bool find_hand = false;
 
     //array of cards 
     private Hand hand;
     private Field field;
     private LifeControl lifeControl;
     private ManaControl mana;
+
+    private EffectsControl effects;
+
     private Serverino serverino;
     private BattleControl battleControl;
 
@@ -53,7 +54,7 @@ public class Control {
         return battleControl;
     }
 
-    public void setPlayerId(int id) {
+    public void setPlayersIds(int id) {
         player_id = id;
         opponent_id = (player_id + 1) % 2;
     }
@@ -67,13 +68,20 @@ public class Control {
     }
 
 	public Control (Serverino server, int player_id) {
-        this.setPlayerId(player_id);
+        this.setPlayersIds(player_id);
         this.serverino = server;
         this.field = new Field(this);
         this.battleControl = new BattleControl(this, field);
         this.lifeControl = new LifeControl(this);
         this.mana = new ManaControl(this);
+        this.effects = new EffectsControl(this);
+
+
         this.hand = GameObject.FindGameObjectWithTag("Hand").GetComponent<Hand>();
+    }
+
+    public bool checkMana (Card card) {
+        return this.mana.checkIfItsPlayable(card);
     }
 
     public void createCard(int id, int cost, int dmg, int life, Position pos) {
@@ -125,6 +133,41 @@ public class Control {
         if (this.isPlayerTurn())
             battleControl.creaturesCanAttack();
 
+    }
+
+    public Card getCardById(int id) {
+        if (id == 5)
+            return new Card(id, "Magia", 7, -1, -1, player_turn);
+        else
+            return new Card(id, "Magia", 4, -1, -1, player_turn);
+    }
+
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="card"></param>
+    /// <param name="position"></param>
+    public void playMagic(Card card, Position position = null) {
+        switch (card.getID()) {
+            case 5: {
+                    this.effects.boardclear(4);
+                    break;
+                }
+
+            case 6: {
+                    this.effects.damageToTargetPosition(position, 6);
+                    break;
+                }
+            default: {
+                    break;
+                }
+        }
+
+        this.field.checkDeaths();
+        mana.spendMana(card.getCost());
+        card.resetCard();
     }
 
 

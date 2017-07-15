@@ -7,63 +7,51 @@ Direct3D:
     VRAM:     2032 MB
     Driver:   15.201.1151.1008
 Begin MonoManager ReloadAssembly
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\Assembly-UnityScript.dll (this message is harmless)
-Loading C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\Assembly-UnityScript.dll into Unity Child Domain
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
-Loading C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\GETween.dll (this message is harmless)
-Loading C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\GETween.dll into Unity Child Domain
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\GUIAnimatorFREE.dll (this message is harmless)
-Loading C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\GUIAnimatorFREE.dll into Unity Child Domain
-- Completed reload, in  0.836 seconds
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\System.Core.dll (this message is harmless)
-Platform assembly: C:\Pedro\Meus jogos\Sonem Bleining\tixinha_Data\Managed\System.dll (this message is harmless)
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\Assembly-UnityScript.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\Assembly-UnityScript.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\GETween.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\GETween.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\GUIAnimatorFREE.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\GUIAnimatorFREE.dll into Unity Child Domain
+- Completed reload, in  0.460 seconds
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\tixinha_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.779265 ms
+UnloadTime: 1.338325 ms
 Recebi mensagem que estou em conectado
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 8.904703 ms
+UnloadTime: 10.513286 ms
 
-Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 492.
-Total: 0.561644 ms (FindLiveObjects: 0.047476 ms CreateObjectMapping: 0.032271 ms MarkObjects: 0.469174 ms  DeleteObjects: 0.011481 ms)
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 497.
+Total: 8.019402 ms (FindLiveObjects: 6.768892 ms CreateObjectMapping: 0.032271 ms MarkObjects: 1.207068 ms  DeleteObjects: 0.009929 ms)
 
-inicializou pelo menos
+json: {"side":0,"line":0,"column":0}
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-ganha + mana
+json: {"side":0,"line":0,"column":1}
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-id atacante 2
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
-id target 1
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
-id atacante 1
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
-oponente me atacou diretamente
+json: {"side":0,"line":0,"column":2}
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 2d20 -> priority: 1 
+  Thread -> id: 14e4 -> priority: 1 

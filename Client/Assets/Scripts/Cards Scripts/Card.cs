@@ -2,22 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Effect {
 
-    public Dictionary<string, bool> actions;
-    public ArrayList fastactions;
-    public ArrayList continuous;
-    public ArrayList fast;
-    public ArrayList trigger;
-
-    public Effect() {
-        actions = new Dictionary<string, bool>();
-        fastactions = new ArrayList();
-        continuous = new ArrayList();
-        fast = new ArrayList();
-        trigger = new ArrayList();
-    }
-};
+interface ICommand {
+    void execute(object param);
+}
 
 public class Card {
 
@@ -26,16 +14,14 @@ public class Card {
     private int id, cost, overcost = 0, cooldown = 1, actual_cooldown;
     private int? damage, life;
 
+    private ICommand onPlayEffect;
     
 
     private string name, type;
     
-
-
     //actual status
     private int actual_damage, actual_life, siege_dmg;
 
-    private Effect eff;
 
     private bool immuny, invisible, can_attack, ranged;
 
@@ -63,6 +49,10 @@ public class Card {
         //getting effects
         //eff = CardEffects.getEffect(id, type);
      
+    }
+
+    public bool isMagic() {
+        return this.type == "Magia";
     }
 
     public bool belongsToPlayer(int player_id) {
@@ -131,6 +121,10 @@ public class Card {
         return id;
     }
 
+    public bool isDead() {
+        return this.actual_life <= 0;
+    }
+
     public bool isRange() {
         return ranged;
     }
@@ -171,6 +165,10 @@ public class Card {
         actual_life += life;
         if (actual_life > this.life)
             actual_life = life;
+    }
+
+    public void dealDamage(int dmg) {
+        this.actual_life -= dmg;
     }
 
 

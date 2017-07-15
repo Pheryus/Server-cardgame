@@ -35,7 +35,7 @@ public class DropZone : MonoBehaviour, IDropHandler {
             Position field_position = getCardPosition(player_side);
 
             //se o servidor deixar ele jogar a cartita;
-            if (server.TryPlayCharacter(card, field_position, d.hand_index)) {
+            if (card.isCreature() && server.tryPlayCharacter(card, field_position, d.hand_index)) {
                 d.parentToReturnTo = this.transform;
                 d.cardIs = "played";
                 

@@ -123,24 +123,40 @@ public class Serverino : MonoBehaviour {
     }
 
     //play a 1 size character on the line/position on the battlefield
-    public bool TryPlayCharacter(Card card, Position pos, int hand_index) {
+    public bool tryPlayCharacter(Card card, Position pos, int hand_index) {
         int id = control.getPlayerId();
-        JSONObject message = JSONWriter.PlayCharacterJSON(card, id, hand_index, pos);
+        JSONObject message = JSONWriter.playCharacterJSON(card, id, hand_index, pos);
         send(message.ToString());
         return readAck("PlayCharacter" + control.getPlayerId() + " ack");
     }
 
-    //joga magia sem alvo - Exemplo: Nevasca (cause 2 de dano a todos personagens)
-    public void TryPlayMagicWithoutTarget(int magic_id) {
-        JSONObject json = JSONWriter.TryPlayMagic(magic_id);
+    /// <summary>
+    /// joga magia sem alvo - Exemplo: Nevasca (cause 2 de dano a todos personagens)
+    /// </summary>
+    /// <param name="magic_id"></param>
+    /// <returns></returns>
+    public bool tryPlayMagicWithoutTarget(int magic_id) {
+        JSONObject json = JSONWriter.tryPlayMagic(magic_id);
         send(json.ToString());
+        return readAck("Play spell" + control.getPlayerId() + " ack");
     }
 
-    // joga magia com alvo - Exemplo: Bola de Fogo (cause 5 de dano a um personagem)
-    public void TryPlayMagicWithTarget(int magic_id, Position pos, int side) {
-        JSONObject json = JSONWriter.TryPlayMagic(magic_id);
-        json.AddField("position", JSONWriter.SetTarget(pos, side));
+    /// <summary>
+    /// joga magia com alvo - Exemplo: Bola de Fogo (cause 5 de dano a um personagem)
+    /// </summary>
+    /// <param name="magic_id"></param>
+    /// <param name="pos"></param>
+    /// <param name="side"></param>
+    /// <returns> True se a carta foi aceita no server.</returns>
+    public bool tryPlayMagicWithTarget(int magic_id, Position pos) {
+        JSONObject json = JSONWriter.tryPlayMagic(magic_id);
+        
+        JSONObject spell = json.GetField("playspell");
+        spell.AddField("position", JSONWriter.setTarget(pos));
+
         send(json.ToString());
+
+        return readAck("Play spell" + control.getPlayerId() + " ack");
     }
 
     public bool tryAttackCharacter(int attacker_id, int target_id, Position attacker_pos, Position target_pos) {
@@ -154,6 +170,7 @@ public class Serverino : MonoBehaviour {
         send(message.ToString());
         return readAck("Attack" + control.getPlayerId() + " ack");
     }
+
 
 
     bool readAck(string ackExpected) {
@@ -258,12 +275,34 @@ public class Serverino : MonoBehaviour {
                         enemyAttack((JSONObject)json.list[0]);
                         break;
                     }
+                case "play magic": {
+                        enemyPlayMagic((JSONObject)json.list[0]);
+                        break;
+                    }
             }
         }
     }
 
-    public void EndTurn() {
+    public void endTurn() {
         send("end turn");
+    }
+
+
+    /// <summary>
+    /// Trata o json recebido quando o oponente joga uma magia.
+    /// </summary>
+    /// <param name="json"></param>
+    private void enemyPlayMagic(JSONObject json) {
+        int id = (int)json.GetField("id").n;
+        Card card = control.getCardById(id);
+
+        JSONObject positionJSON = json.GetField("position");
+        Position position = null;
+
+        if (positionJSON != null) {
+             position = JSONReader.getPositionInstance(positionJSON);
+        }
+        this.control.playMagic(card, position);
     }
 
     private void enemyAttack (JSONObject json) {
@@ -273,13 +312,11 @@ public class Serverino : MonoBehaviour {
         Position attacker_position = JSONReader.getPositionInstance(position, false);
         attacker_position.side = control.getOpponentId();
 
-        Card attacker_card = control.getField().getCard(attacker_position);
-        Debug.Log("id atacante " + attacker_card.getID());
+        Card attacker_card = control.getField().getCardByPosition(attacker_position);
         BattleControl battleControl = control.getBattleControl();
 
         //atacou direto
         if (target_id == -1) {
-            Debug.Log("oponente me atacou diretamente");
             battleControl.directAttack(attacker_card, control.getPlayerId());
         }
         else {
@@ -287,8 +324,7 @@ public class Serverino : MonoBehaviour {
             Position target_position = JSONReader.getPositionInstance(target_positionJSON, false);
             target_position.side = control.getPlayerId();
 
-            Card target_card = control.getField().getCard(target_position);
-            Debug.Log("id target " + target_card.getID());
+            Card target_card = control.getField().getCardByPosition(target_position);
             battleControl.cardAttackCard(attacker_card, target_card);  
         }
 

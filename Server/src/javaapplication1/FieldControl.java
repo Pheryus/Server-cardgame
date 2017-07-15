@@ -1,5 +1,7 @@
 package javaapplication1;
 
+import java.util.concurrent.Callable;
+
 /**
  *
  * @author Pedro
@@ -21,11 +23,34 @@ public class FieldControl {
         players_field[clientid].cardsCanAttack();
     }
     
-    public boolean haveTarget(int side, int line, int column){
-        return players_field[side].haveTarget(line, column);
+    public boolean haveTarget(Position position){
+        return players_field[position.side].haveTarget(position.line, position.column);
     }
     
-    Card getCardFromField(int clientid, int line, int column){
-        return players_field[clientid].getCard(line, column);
+    public void damageToAllCards(int dmg){
+        for (int i = 0; i < 2; i++){
+            for (int j = 0; j < 2; j++){
+                for (int k = 0; k < 3; j++){
+                    Card card = players_field[i].getCard(j, k);
+                    if (card != null)
+                        card.takeDamage(dmg);
+                }
+            }
+        }
+    }
+    
+    public void damageToPlayerCards(int dmg, int player_id){
+        for (int j = 0; j < 2; j++){
+                for (int k = 0; k < 3; j++){
+                    Card card = players_field[player_id].getCard(j, k);
+                    if (card != null)
+                        card.takeDamage(dmg);
+                }
+            }
+    }
+        
+    
+    Card getCardFromField(Position position){
+        return players_field[position.side].getCard(position.line, position.column);
     }
 }

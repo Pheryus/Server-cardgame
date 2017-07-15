@@ -11,52 +11,60 @@ public class CardArrowDrag : MonoBehaviour,IDragHandler, IEndDragHandler {
 
     private CardInstance card_instance;
 
-    public bool valid_target = false;
+    private GameObject card_line;
 
-    public Transform parentToReturnTo = null;
-    GameObject myLine;
+    private Control control;
 
     private void Start() {
         draggable = transform.parent.GetComponent<Draggable>();
         card_instance = transform.parent.GetComponent<CardInstance>();
-        Debug.Log("inicializou pelo menos");
+
+        this.control = GameObject.FindGameObjectWithTag("Control").GetComponent<Serverino>().control;
+
     }
         
     public void destroyLine() {
-        if (myLine != null)
-            Destroy(myLine);
+        if (card_line != null)
+            Destroy(card_line);
     }
 
     public void OnDrag(PointerEventData eventData) {
-        Debug.Log("entrou aqui");
-        Control control_reference = GameObject.FindGameObjectWithTag("Control").GetComponent<Serverino>().control;
-        if (draggable.played && card_instance.card.canAttack() && control_reference.isPlayerTurn()) {
-            Vector3 screenPoint = Input.mousePosition;
-            screenPoint.z = 10.0f; //distance of the plane from the camera
-            Vector3 start = transform.parent.transform.position;
-            Vector3 end = Camera.main.ScreenToWorldPoint(screenPoint);
-            DrawLine(start, end, new Color(255, 0, 0));
+        Card card = card_instance.card;
+        if (draggable.played == true  && card.canAttack() && this.control.isPlayerTurn()) {
+            defineLine();
         }
+    }
+
+    private void defineLine() {
+        Vector3 screenPoint = Input.mousePosition;
+        screenPoint.z = 10.0f; //distance of the plane from the camera
+        Vector3 start = transform.parent.transform.position;
+        Vector3 end = Camera.main.ScreenToWorldPoint(screenPoint);
+        drawLine(start, end, new Color(255, 0, 0));
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        if (myLine)
-            GameObject.Destroy(myLine);
+        if (card_line)
+            GameObject.Destroy(card_line);
     }
 
 
-     void DrawLine(Vector3 start, Vector3 end, Color color, float duration = 0.01f) {
+     void drawLine(Vector3 start, Vector3 end, Color color, float duration = 0.01f) {
         LineRenderer lr;
-        if (!myLine) { 
-            myLine = new GameObject();
-            myLine.transform.position = start;
-            myLine.AddComponent<LineRenderer>();
-            lr = myLine.GetComponent<LineRenderer>();
+        if (!card_line) { 
+            card_line = new GameObject();
+            card_line.transform.position = start;
+            card_line.AddComponent<LineRenderer>();
+            lr = card_line.GetComponent<LineRenderer>();
             lr.material = new Material(lineShader);
-            lr.SetColors(color, color);
-            lr.SetWidth(0.1f, 0.1f);
+            lr.startColor = color;
+            lr.endColor = color;
+            //lr.SetColors(color, color);
+            lr.startWidth = 0.1f;
+            lr.endWidth = 0.1f;
+            
         }
-        lr = myLine.GetComponent<LineRenderer>();
+        lr = card_line.GetComponent<LineRenderer>();
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
     }

@@ -20,18 +20,18 @@ public class Game {
 
     public PlayersCards players_cards;
     private int players_turn;
-    
-    private final LifeControl lifeControl;
-    
-    
-    private int turn_number = 0;
-    
+        
     private final FieldControl fieldControl;
+    private final LifeControl lifeControl;
+    private final ManaControl manaControl;
+    private int turn_number = 0;
+    private final Client[] clients;
+    private final ActionsControl actionsControl;
 
     public FieldControl getFieldControl() {
         return fieldControl;
     }
-    private final ManaControl manaControl;
+
 
     public LifeControl getLifeControl(){
         return lifeControl;
@@ -48,10 +48,7 @@ public class Game {
     public Deck[] getPlayerDecks(){
         return deck_players;
     }
-    
-    private final Client[] clients;
-    private final ActionsControl actionsControl;
-    
+ 
     public Game (){
         lifeControl = new LifeControl();
         manaControl = new ManaControl();
@@ -59,8 +56,8 @@ public class Game {
         clients = new Client[2];
         jsonController = new JSONController();
         deck_players = new Deck[2];
-        deck_players[0] = new Deck(0);
-        deck_players[1] = new Deck(1);
+        deck_players[0] = new Deck(0, this);
+        deck_players[1] = new Deck(1, this);
    
         fieldControl = new FieldControl();
         actionsControl = new ActionsControl(this);
@@ -104,7 +101,7 @@ public class Game {
     }
     
     void clientSentMessage(String message, int clientid) throws JSONException{
-        //System.out.println("Message receive: " + message);
+        System.out.println("Message receive: " + message);
         try {
             JSONObject json = new JSONObject(message);
             clientSentJSON(json, message, clientid);
@@ -118,11 +115,10 @@ public class Game {
     private void clientSentJSON(JSONObject json, String message, int clientid) throws JSONException{
         if (!isPlayerTurn(clientid))
             return;
+        
         //checa se é uma magia
         JSONObject card = json.optJSONObject("playspell");
         if (card != null){
-            System.out.println("jogou spell");
-
             actionsControl.clientCastSpell(message, clientid, card, players_turn);
         }
 

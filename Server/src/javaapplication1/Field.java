@@ -66,7 +66,7 @@ public class Field {
             card_list.put("id", id);
             card_list.put("type", frontline[i].getType());
             card_list.put("cost", frontline[i].getCost());
-            card_list.put("dmg", frontline[i].getActual_damage());
+            card_list.put("dmg", frontline[i].getActual_attack());
             card_list.put("life", frontline[i].getActual_life());
             jsonArray.put(card_list);
         }
@@ -79,7 +79,7 @@ public class Field {
             card_list.put("id", id);
             card_list.put("type", backline[i].getType());
             card_list.put("cost", backline[i].getCost());
-            card_list.put("dmg", backline[i].getActual_damage());
+            card_list.put("dmg", backline[i].getActual_attack());
             card_list.put("life", backline[i].getActual_life());
             jsonArray.put(card_list);
         }

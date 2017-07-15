@@ -2,11 +2,13 @@
 
 public class Position {
 
-	public int x, y;
+	public int column, line;
     public int side;
-	public Position (int x, int y, int side = -1){
-		this.x = x;
-		this.y = y;
+
+
+	public Position (int column, int line, int side = -1){
+		this.column = column;
+		this.line = line;
         this.side = side;
 	}
 

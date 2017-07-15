@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Field {
 
-    private Card[, , ] field;
     private GameObject fieldGO;
     private Control control;
 
@@ -22,7 +21,6 @@ public class Field {
 
 
     public Field(Control control) {
-        field = new Card[2, 3, 2];
         this.control = control;
         fieldGO = GameObject.FindGameObjectWithTag("field");
     }
@@ -33,12 +31,40 @@ public class Field {
     /// </summary>
     /// <param name="pos"></param>
     /// <returns></returns>
-    public Card getCard(Position pos) {
+    public Card getCardByPosition(Position pos) {
         Transform card_position_transform = findCardPositionGOinField(pos);
         CardInstance card_instance = findCardInstanceInTransform(card_position_transform);
         if (card_instance)
             return card_instance.card;
         return null;
+    }
+
+
+    /// <summary>
+    /// Causa dano ao personagem na posição alvo. Caso não exista personagem, nenhum dano é causado.
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="dmg"></param>
+    public void damageToPosition (Position pos, int dmg) {
+
+        Card card = this.getCardByPosition(pos);
+        if (card != null) {
+            card.dealDamage(dmg);
+        }
+    }
+
+
+    public void checkDeaths() {
+        for (int i=0; i < 2; i++)
+            for (int j=0; j < 3; j++)
+                for (int k = 0; k < 2; k++) {
+                    Position position = new Position(j, k, i);
+                    Card card = getCardByPosition(position);
+
+                    if (card != null && card.isDead()) {
+                        this.removeCardFromGameObject(position);
+                    }
+                }
     }
 
 
@@ -78,15 +104,16 @@ public class Field {
         return null;
     }
 
+
     /// <summary>
-    /// Dada a posição no campo, retorna o Transform do GO que tem contém a carta daquela posição.
+    /// Dada a posição no campo, retorna o Transform do GO que contém a carta daquela posição.
     /// </summary>
     /// <param name="pos">Posição alvo que será retirado GO</param>
     /// <returns></returns>
     private Transform findCardPositionGOinField(Position pos) {
         string name = getFieldGOName(pos);
         Transform line = fieldGO.transform.Find(name);
-        return line.transform.GetChild(pos.x);
+        return line.transform.GetChild(pos.column);
     }
 
     private string getFieldGOName (Position pos) {
@@ -95,7 +122,7 @@ public class Field {
         if (pos.side != control.getPlayerId())
             name += opponent_side;
 
-        if (pos.y == 0)
+        if (pos.line == 0)
             name += front;
         else
             name += back;
@@ -135,6 +162,7 @@ public class Field {
         card_instance.setFieldPosition(pos);
         
         go.AddComponent<CardArrowDrop>();
+        go.AddComponent<EffectTargetUI>();
     }
     
     //muda o text component do objeto

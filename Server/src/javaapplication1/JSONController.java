@@ -91,6 +91,8 @@ public final class JSONController {
         
     }
     
+ 
+    
     
     static JSONObject enemyAttackPlayerJSON(JSONObject json, int playerlife){
         JSONObject attackJSON = new JSONObject();
@@ -113,6 +115,28 @@ public final class JSONController {
         return attackJSON;
     }
     
+    static JSONObject enemyPlayMagic(int playerid, Card card_played, Position position) throws JSONException{
+        JSONObject magic_playedJSON = new JSONObject();
+        
+        JSONObject json = new JSONObject();
+        json.put("id", card_played.getId());
+        json.put("cost", card_played.getCost());
+        
+        if (position != null)
+            json.put("position", positionToJSON(position));
+        
+        magic_playedJSON.put("play magic", json);
+        return magic_playedJSON;
+    }
+    
+    static JSONObject positionToJSON(Position position) throws JSONException{
+        JSONObject positionJSON = new JSONObject();
+        positionJSON.put("line", position.line);
+        positionJSON.put("column", position.column);
+        positionJSON.put("side", position.side);
+        return positionJSON;
+    }
+    
    
     static JSONObject EnemyPlayedCreatureJSON(int playerid, Card card_played, int mana, JSONObject json) throws JSONException{
         JSONObject creature_playedJSON = new JSONObject();
@@ -120,7 +144,7 @@ public final class JSONController {
         json.put("cost", card_played.getCost());
         
         json.put("enemymana", mana);
-        json.put("dmg", card_played.getDamage());
+        json.put("dmg", card_played.getAttack());
         json.put("life", card_played.getLife());
         
         creature_playedJSON.put("playcreature", json);
