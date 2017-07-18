@@ -119,18 +119,22 @@ public class Game {
         //checa se é uma magia
         JSONObject card = json.optJSONObject("playspell");
         if (card != null){
-            actionsControl.clientCastSpell(message, clientid, card, players_turn);
+            actionsControl.playSpell(clientid, json);
         }
 
         card = json.optJSONObject("attack");
         if (card != null){
-            actionsControl.clientAttack(clientid, card, players_turn);
+            actionsControl.clientAttack(clientid, json);
         }  
 
         card = json.optJSONObject("playcreature");
         if (card != null){
-            actionsControl.clientPlayCreature(message, clientid, card, players_turn);
+            actionsControl.playCreature(clientid, json);
         }
+        
+        card = json.optJSONObject("movecreature");
+        if (card != null)
+            actionsControl.moveCreature(clientid, json);
     }
     
     private void endTurnEffects(){

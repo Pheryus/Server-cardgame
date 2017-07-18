@@ -138,7 +138,7 @@ public final class JSONController {
     }
     
    
-    static JSONObject EnemyPlayedCreatureJSON(int playerid, Card card_played, int mana, JSONObject json) throws JSONException{
+    static JSONObject enemyPlayedCreatureJSON(int playerid, Card card_played, int mana, JSONObject json) throws JSONException{
         JSONObject creature_playedJSON = new JSONObject();
         
         json.put("cost", card_played.getCost());

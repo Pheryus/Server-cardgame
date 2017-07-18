@@ -32,6 +32,16 @@ public class ActionsControl {
         this.deck_players = game.getPlayerDecks();
     }
     
+    public void playSpell(int client_id, JSONObject spellJSON) throws JSONException {
+        sendToClient("Play spell" + Integer.toString(client_id) + " ack", client_id);
+        sendToClient(spellJSON.toString(), getOpponentId(client_id));
+    }
+    
+    public int getOpponentId(int client_id){
+        return (client_id + 1) % 2;
+    }
+    
+    /*
     private void playSpell(Card card, int client_id, JSONObject spellJSON) throws JSONException{
         
         Position target_position = null;
@@ -53,10 +63,11 @@ public class ActionsControl {
             if (target_card == null)
                 valid_card = false;
         }
+    
 
         if (valid_card == true){
-            card.onPlayEffect.execute(card);
-            manaControl.spendMana(card, client_id);
+            //card.onPlayEffect.execute(card);
+            //manaControl.spendMana(card, client_id);
             sendToClient("Play spell" + Integer.toString(client_id) + " ack", client_id);
 
             //cria a mensagem do monstro criado + a mana atual do jogador que jogou ela
@@ -68,9 +79,13 @@ public class ActionsControl {
             sendToClient(new_message, opponentid);
         }
     }
+    */
     
     
+    
+    /*
     public void clientCastSpell(String message, int clientid, JSONObject spellJSON, int players_turn) throws JSONException{
+        this.playSpell(null, players_turn, spellJSON);
         
         int card_id = Integer.parseInt(spellJSON.optString("id"));
         
@@ -79,7 +94,7 @@ public class ActionsControl {
         //se carta existir na mão do player
         if (card != null){
             if (manaControl.checkAvaliableMana(card, players_turn) && isPlayerTurn(clientid, players_turn)){                
-                this.playSpell(card, players_turn, spellJSON);
+                
             }
             else
                 System.out.println("sem mana suficiente");
@@ -87,12 +102,22 @@ public class ActionsControl {
         else {
             System.out.println("carta nao existe");
         }
-
+       
+    }
+    */
+ 
+    public void clientAttack(int client_id, JSONObject attackJSON) throws JSONException {
+        sendToClient("Attack" + Integer.toString(client_id) + " ack", client_id);
+        sendToClient(attackJSON.toString(), getOpponentId(client_id));
     }
     
-  
     
+    public void moveCreature(int client_id, JSONObject moveJSON) throws JSONException {
+        sendToClient("Move" + Integer.toString(client_id) + " ack", client_id);
+        sendToClient(moveJSON.toString(), getOpponentId(client_id));
+    }
     
+    /*
     void clientAttack (int clientid, JSONObject attackMSG, int players_turn) throws JSONException{   
         
         //checa se é turno do jogador
@@ -107,19 +132,17 @@ public class ActionsControl {
         Position position = this.jsonToPosition(json_position);
         
         //atacou direto
-        if (target_id == -1){
-            if (creatureCanAttackDirectly(position)){
-                confirmedDirectAttack(position, attackMSG);
-            }
-        }
+        if (target_id == -1)
+            //if (creatureCanAttackDirectly(position))
+            confirmedDirectAttack(position, attackMSG);
         
         else {
             JSONObject target_json_position = attackMSG.getJSONObject("target_position");
             Position target_position = this.jsonToPosition(target_json_position);
             
-            if (creatureCanAttack(position, target_position)){
-               confirmedAttack(position, target_position, attackMSG);
-            }
+            //if (creatureCanAttack(position, target_position))
+            confirmedAttack(position, target_position, attackMSG);
+            
         }
     }
     
@@ -127,20 +150,24 @@ public class ActionsControl {
         int client_id = attacker_position.side;
         clients[client_id].sendToClient("Attack" + Integer.toString(client_id) + " ack");
 
-        Card attacker = getCardFromField(attacker_position);
         int opponentid = game.getOpponentID(client_id);
+        String attack_message = jsonController.enemyAttackCharacterJSON(attackMSG).toString();
+        sendToClient(attack_message, opponentid);
         
+        
+        Card attacker = getCardFromField(attacker_position);
         Card target = getCardFromField(target_position);
-
+        
         if (attacker != null && target != null){
-           calculateBattle(attacker, target);
+           //calculateBattle(attacker, target);
            attacker.setAttack(false);
-           String attack_message = jsonController.enemyAttackCharacterJSON(attackMSG).toString();
-           sendToClient(attack_message, opponentid);
-           checkDeaths();
+
+           //checkDeaths();
         }
+        
          
     }
+    */
     
     private void checkDeaths(){
         Field[] fields = fieldControl.getPlayersField();
@@ -191,7 +218,6 @@ public class ActionsControl {
     }
     
     private Position jsonToPosition(JSONObject position){
-        System.out.println("leitao");
         if (position == null)
             return null;
         
@@ -209,68 +235,55 @@ public class ActionsControl {
         return field.haveTarget(pos.line, pos.column) == false;
     }
     
-    private void playCreature (Deck deck, int hand_id, Card creature_played, Position card_position, int clientid, JSONObject creature) throws JSONException{
+    public void playCreature (int client_id, JSONObject creatureJSON) throws JSONException{
+
+        sendToClient("PlayCharacter" + Integer.toString(client_id) + " ack", client_id);
+        sendToClient(creatureJSON.toString(), getOpponentId(client_id));
+    }
+    
+    /*
+    private void playCreature (Deck deck, int hand_id, Card creature_played, Position card_position, int clientid, JSONObject creatureJSON) throws JSONException{
             //gasta carta do "deck"
-            deck.playCardByIndex(hand_id);
+            //deck.playCardByIndex(hand_id);
             //gasta mana de acordo com o custo
-            manaControl.spendMana(creature_played, clientid);
+            //manaControl.spendMana(creature_played, clientid);
             
             //recebe mana do jogador que jogou a carta
-            int player_mana = manaControl.getPlayerMana(clientid);
+            //int player_mana = manaControl.getPlayerMana(clientid);
             
-            if (clientid == 0)
-                System.out.println("Cliente " + clientid + " jogou carta carta " +  creature_played.getName() + " na posição (" + card_position.line + " , " + card_position.column);
-            //envia mensagem que personagem foi jogado
             sendToClient("PlayCharacter" + Integer.toString(clientid) + " ack", clientid);
             
             //atualiza o field
-            fieldControl.getPlayersField()[clientid].summonCreature(creature_played, card_position.line, card_position.column);
+            //fieldControl.getPlayersField()[clientid].summonCreature(creature_played, card_position.line, card_position.column);
             
-            //cria a mensagem do monstro criado + a mana atual do jogador que jogou ela
-            String message = JSONController.EnemyPlayedCreatureJSON(clientid, creature_played, player_mana, creature).toString();
+            JSONObject json = new JSONObject();
+            json.put("playcreature", creatureJSON);
+            
             //pega o id do oponente
             int opponentid = (clientid+1)%2;
 
-            sendToClient(message, opponentid);
+            sendToClient(json.toString(), opponentid);
     }
-    
-    
-    void clientPlayCreature(String message, int clientid, JSONObject creature, int players_turn) throws JSONException{
+    */
+       
+    /*
+    void clientPlayCreature(String message, int clientid, JSONObject creatureJSON, int players_turn) throws JSONException{
         
         if (this.isPlayerTurn(clientid, players_turn) == false){
             System.out.println("Não é turno do jogador");
             return;
         }
         
-        int hand_id = creature.optInt("hand_id");
-        Deck deck = deck_players[players_turn];
-        Card creature_played = deck.cardIsInDeckByIndex(hand_id);
-
-        if (creature_played != null){
-            if (manaControl.checkAvaliableMana(creature_played, players_turn)){
-                
-                JSONObject json_position = creature.optJSONObject("position");
-                
-                Position position = this.jsonToPosition(json_position);
-                
-                if (position != null && this.positionInFieldIsEmpty(position) == true){
-                    if (creature_played.canPlay())
-                        this.playCreature(deck, hand_id, creature_played, position, clientid, creature);
-                }
-                else{
-                    System.out.println("posicao invalida");
-                }
-            }
-            else
-                System.out.println("sem mana suficiente");
-        }
-        else {
-            System.out.println("Criatura não existe!!!");
-        }
+        int hand_id = creatureJSON.optInt("hand_id");
+        //Deck deck = deck_players[players_turn];
+        //Card creature_played = deck.cardIsInDeckByIndex(hand_id);
         
+        JSONObject json_position = creatureJSON.optJSONObject("position");        
+        Position position = this.jsonToPosition(json_position);
         
+        this.playCreature(null, hand_id, null, position, clientid, creatureJSON)
     }
-
+    */
     
 
     
