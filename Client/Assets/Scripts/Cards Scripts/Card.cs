@@ -12,9 +12,10 @@ public class Card {
     private const string characterType = "Personagem";
 
     private int id, cost, overcost = 0, cooldown = 1, actual_cooldown;
-    private int? damage, life;
+    private int? attack, life;
+    public int original_cost;   
 
-    public ICommand onPlayEffect;
+    public Effects onActivateEffect;
     
 
     private string name, type;
@@ -23,7 +24,7 @@ public class Card {
     private int actual_damage, actual_life, siege_dmg;
 
 
-    private bool immuny, invisible, can_attack, ranged;
+    private bool immuny, invisible, can_attack, can_attack_directly, ranged, charge;
 
     private Position position;
 
@@ -33,24 +34,22 @@ public class Card {
     public Card (int id, string name, string type, int cost, int damage, int life, int cooldown, int overcost) {
         this.id = id;
         this.cost = cost;
+        this.original_cost = cost;
         this.actual_cooldown = 0;
         this.name = name;
 
         this.cooldown = cooldown;
         this.overcost = overcost;
 
-        this.damage = damage;
+        this.attack = damage;
         this.life = life;
         this.immuny = false;
         this.invisible = false;
-        this.actual_damage = this.damage.GetValueOrDefault();
+        this.actual_damage = this.attack.GetValueOrDefault();
         this.actual_life = this.life.GetValueOrDefault();
         this.siege_dmg = 1;
 
         this.type = type;
-
-        //getting effects
-        //eff = CardEffects.getEffect(id, type);
      
     }
 
@@ -62,15 +61,37 @@ public class Card {
         return this.type == "Magia";
     }
 
+    public void setSiegeDmg(int siege_dmg) {
+        this.siege_dmg = siege_dmg;
+    }
+
     public bool belongsToPlayer(int player_id) {
         return player_id == this.player_controller;
     }
+
+    public void setCharge(bool charge) {
+        this.charge = charge;
+    }
+
+    public bool hasCharge() {
+        return this.charge;
+    }
+
+    public void onPlayEnter() {
+        if (this.hasCharge())
+            this.can_attack = true;
+    }
+
 
     public bool canAttack() {
         return can_attack;
     }
     public Position getPosition() {
         return position;
+    }
+
+    public void setRanged(bool range) {
+        this.ranged = true;
     }
 
     public int getPlayerId() {
@@ -86,6 +107,10 @@ public class Card {
         this.increaseCost();
     }
 
+    public bool canAttackDirectly() {
+        return this.can_attack_directly;
+    }
+
     public void endOfTurnInHand() {
         if (this.actual_cooldown > 0) {
             this.actual_cooldown--; 
@@ -96,10 +121,13 @@ public class Card {
         return this.actual_cooldown == 0;
     }
 
+    public void setCanAttackDirectly(bool attack_directly) {
+        this.can_attack_directly = attack_directly;
+    }
 
     private void resetStatus() {
         if (isCreature()) {
-            this.actual_damage = (int)this.damage;
+            this.actual_damage = (int)this.attack;
             this.actual_life = (int)this.life;
             this.can_attack = false;
         }
@@ -110,14 +138,12 @@ public class Card {
         this.cost += this.overcost;
     }
 
-
-
     public void setPosition(Position position) {
         this.position = position;
     }
 
     public void setCanAttack (bool canattack) {
-        can_attack = canattack;
+        this.can_attack = canattack;
     }
 
     public int getSiegeDmg() {
@@ -144,8 +170,8 @@ public class Card {
         return invisible;
     }
 
-    public int? getDmg() {
-        return this.damage;
+    public int? getAttack() {
+        return this.attack;
     }
 
     public int? getLife() {
@@ -160,7 +186,7 @@ public class Card {
         return this.actual_cooldown;
     }
 
-    public int getActualDmg() {
+    public int getActualAttack() {
         return actual_damage;
     }
 
@@ -177,7 +203,6 @@ public class Card {
     public void dealDamage(int dmg) {
         this.actual_life -= dmg;
     }
-
 
     public int getCost() {
         return cost;

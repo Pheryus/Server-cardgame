@@ -1,0 +1,31 @@
+Initialize engine version: 5.5.2f1 (3829d7f588f3)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: AMD Radeon HD 6900 Series (ID=0x6719)
+    Vendor:   ATI
+    VRAM:     2032 MB
+    Driver:   15.201.1151.1008
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\Assembly-UnityScript.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\Assembly-UnityScript.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GETween.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GETween.dll into Unity Child Domain
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GUIAnimatorFREE.dll (this message is harmless)
+Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GUIAnimatorFREE.dll into Unity Child Domain
+- Completed reload, in  0.670 seconds
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\System.dll (this message is harmless)
+desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.

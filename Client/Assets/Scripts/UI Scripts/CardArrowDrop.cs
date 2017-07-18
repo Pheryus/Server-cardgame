@@ -26,20 +26,28 @@ public class CardArrowDrop : MonoBehaviour, IDropHandler {
         int opponent_id = control.getOpponentId();
 
         if (gameObject.tag == "enemy") {
-            if (server.tryAttackPlayer(attacker.getID(), attacker.getPosition())) {
+
+            if (battleControl.canAttackPlayer(attacker) && 
+                    server.tryAttackPlayer(attacker.getID(), attacker.getPosition())) {
                 battleControl.directAttack(attacker, opponent_id);
             }
         }
         else {
-            Card target = transform.GetComponent<CardInstance>().card;
+            Card target = transform.GetComponent<CardGOInstance>().card;
             if (target == null)
                 return;
-            Position position = target.getPosition();
-            Position position2 = attacker.getPosition();
+
+            if (battleControl.canAttackCharacter(attacker, target) == false)
+                return;
+
+            attacker.setCanAttack(false);
+
             bool can_attack_target = server.tryAttackCharacter(attacker.getID(), target.getID(), attacker.getPosition(), target.getPosition());
             if (can_attack_target) {
                 battleControl.cardAttackCard(attacker, target);
             }
+            else
+                attacker.setCanAttack(true);
         }
     }
 
@@ -48,7 +56,7 @@ public class CardArrowDrop : MonoBehaviour, IDropHandler {
         
         if (dragged_card != null && server.control.isPlayerTurn()) {
             
-            Card card = dragged_card.transform.parent.GetComponent<CardInstance>().card;
+            Card card = dragged_card.transform.parent.GetComponent<CardGOInstance>().card;
 
             if (card.isCreature()) {
                 this.attack(card);

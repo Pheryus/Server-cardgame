@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.5.2f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -98,8 +100,9 @@
     <Compile Include="Assets\GUI Animator\GUI Animator FREE\Demo (CSharp)\Scripts\GA_FREE_OpenOtherScene.cs" />
     <Compile Include="Assets\GUI Animator\GUI Animator FREE\Demo Basic (CSharp)\Scripts\GUIAnimatorFREEDemo.cs" />
     <Compile Include="Assets\Scripts\Cards Scripts\Card.cs" />
+    <Compile Include="Assets\Scripts\Cards Scripts\CardGOInstance.cs" />
     <Compile Include="Assets\Scripts\Cards Scripts\CardInstance.cs" />
-    <Compile Include="Assets\Scripts\Cards Scripts\CardsEffects.cs" />
+    <Compile Include="Assets\Scripts\Cards Scripts\Effects.cs" />
     <Compile Include="Assets\Scripts\Cards Scripts\Position.cs" />
     <Compile Include="Assets\Scripts\Game Scripts\BattleControl.cs" />
     <Compile Include="Assets\Scripts\Game Scripts\Control.cs" />
@@ -110,7 +113,6 @@
     <Compile Include="Assets\Scripts\Game Scripts\LifeControl.cs" />
     <Compile Include="Assets\Scripts\Game Scripts\ManaControl.cs" />
     <Compile Include="Assets\Scripts\Game Scripts\Serverino.cs" />
-    <Compile Include="Assets\Scripts\Game Scripts\Turn.cs" />
     <Compile Include="Assets\Scripts\Hand Scripts\Draggable.cs" />
     <Compile Include="Assets\Scripts\Hand Scripts\DropZone.cs" />
     <Compile Include="Assets\Scripts\Hand Scripts\Hand.cs" />
@@ -123,7 +125,6 @@
     <Compile Include="Assets\Scripts\UI Scripts\EffectArrowUI.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\EffectTargetUI.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\StartGame.cs" />
-    <Compile Include="Assets\Scripts\UI Scripts\Targets.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\UpdateCardAttributes.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\UpdateManaUI.cs" />
     <Compile Include="Assets\Scripts\UI Scripts\ViewModel.cs" />

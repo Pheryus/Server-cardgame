@@ -33,6 +33,14 @@ public static class JSONWriter {
 
 	*/
 
+    static public JSONObject moveCharacterJSON(Card card, Position position) {
+        JSONObject json = new JSONObject();
+        json.AddField("start_position", setTarget(card.getPosition()));
+        json.AddField("end_position", setTarget(position));
+        JSONObject move = new JSONObject();
+        move.AddField("movecreature", json);
+        return move;
+    }
 
 
     //cria json para a magia	
@@ -61,6 +69,9 @@ public static class JSONWriter {
         JSONObject json = new JSONObject();
         json.AddField("id", id);
         json.AddField("player_id", playerid);
+
+        json.AddField("cost", card.getCost());
+
         json.AddField("hand_id", hand_index);
         JSONObject posJSON = JSONWriter.setTarget(pos);
 
@@ -69,7 +80,7 @@ public static class JSONWriter {
         return cardJSON;
     }
 
-    public static JSONObject AttackPlayerJSON(int attacker_id, Position attacker_pos) {
+    public static JSONObject attackPlayerJSON(int attacker_id, Position attacker_pos) {
         JSONObject json = new JSONObject();
         json.AddField("attacker_id", attacker_id.ToString());
         json.AddField("target_id", -1);

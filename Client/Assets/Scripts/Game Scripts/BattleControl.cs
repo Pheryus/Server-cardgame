@@ -20,14 +20,55 @@ public class BattleControl {
         /*
             AQUI OCORRERÃO CHAMADAS DE FUNÇÕES ENVOLVENDO BATALHAS
         */
-        int dmg = -target.getActualDmg();
+        int dmg = -target.getActualAttack();
         
         if (attacker_take_damage)
             attacker.changeActualLife(dmg);
-        int attacker_dmg = -attacker.getActualDmg();
+        int attacker_dmg = -attacker.getActualAttack();
 
         target.changeActualLife(attacker_dmg);
     }
+
+    public bool canAttackPlayer(Card attacker) {
+
+        if (attacker.canAttackDirectly() == false)
+            return false;
+
+        Position attacker_position = attacker.getPosition();
+
+        if (attacker.isRange() && attacker_position.line == 0)
+            return true;
+        else if (!attacker.isRange() && attacker_position.line == 1)
+            return false;
+
+        Position front_creature = new Position(2 - attacker_position.column, 0, 1 - attacker_position.side);
+
+        if (field.getCardByPosition(front_creature) == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public bool canAttackCharacter(Card attacker, Card target) {
+        Position attacker_position = attacker.getPosition();
+        Position target_position = target.getPosition();
+
+        if (attacker.isRange() && attacker_position.line == 0)
+            return true;
+        else if (!attacker.isRange() && attacker_position.line == 1)
+            return false;
+
+        if (target_position.line == 0)
+            return true;
+        else {
+            Position front_creature = new Position(target_position.column, 0, target_position.side);
+            if (target_position.column == attacker_position.column && field.getCardByPosition(front_creature) == null)
+                return true;
+        }
+        return false;
+
+    }
+
 
     public void directAttack(Card attacker, int target_side) {
         int life_lost = attacker.getSiegeDmg();
@@ -37,23 +78,12 @@ public class BattleControl {
 
     public void cardAttackCard(Card attacker, Card target) {
         calculateBattle(attacker, target);
-        checkDeath(attacker);
-        checkDeath(target);
+        field.check_death(attacker);
+        field.check_death(target);
         attacker.setCanAttack(false);
     }
 
-    public void checkDeath(Card card) {
-        if (card.getActualLife() <= 0) {
-            Position position = card.getPosition();
-            field.removeCard(position);
-            field.removeCardFromGameObject(position);
-            int player_id = this.control.getPlayerId();
-            if (card.belongsToPlayer(player_id)) {
-                control.returnCardToHand(card);
-            }
-
-        }
-    }
+    
 
     public void creaturesCanAttack() {
         for (int i = 0; i < 2; i++) {
@@ -63,7 +93,8 @@ public class BattleControl {
                 if (creature.transform.childCount > 0) {
                     creature = creature.transform.GetChild(0).gameObject;
                     if (creature != null) {
-                        creature.GetComponent<CardInstance>().card.setCanAttack(true);
+                        creature.GetComponent<CardGOInstance>().card.setCanAttack(true);
+                        creature.GetComponent<CardGOInstance>().card.setCanAttackDirectly(true);
                     }
                 }
             }

@@ -26,8 +26,8 @@ public class ManaControl {
         players_mana[control.getPlayerId()] = mana;
     }
 
-    public void setOpponentMana(int mana) {
-        players_mana[control.getOpponentId()] = mana;
+    public void reduceOpponentMana(int mana) {
+        players_mana[control.getOpponentId()] -= mana;
     }
 
     private void gainInitialMana() {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,7 +34,7 @@ public class Field {
     /// <returns></returns>
     public Card getCardByPosition(Position pos) {
         Transform card_position_transform = findCardPositionGOinField(pos);
-        CardInstance card_instance = findCardInstanceInTransform(card_position_transform);
+        CardGOInstance card_instance = findCardInstanceInTransform(card_position_transform);
         if (card_instance)
             return card_instance.card;
         return null;
@@ -46,7 +47,6 @@ public class Field {
     /// <param name="pos"></param>
     /// <param name="dmg"></param>
     public void damageToPosition (Position pos, int dmg) {
-
         Card card = this.getCardByPosition(pos);
         if (card != null) {
             card.dealDamage(dmg);
@@ -54,18 +54,38 @@ public class Field {
     }
 
 
-    public void checkDeaths() {
+    public void check_board() {
         for (int i=0; i < 2; i++)
             for (int j=0; j < 3; j++)
                 for (int k = 0; k < 2; k++) {
                     Position position = new Position(j, k, i);
                     Card card = getCardByPosition(position);
-
-                    if (card != null && card.isDead()) {
-                        this.removeCardFromGameObject(position);
+                    if (card != null) {
+                        this.check_death(card);
                     }
                 }
     }
+
+
+    public void check_death(Card card) {
+        if (card.isDead()) {
+            Position position = card.getPosition();
+            this.removeCard(position);
+            this.removeCardFromGameObject(position);
+            int player_id = this.control.getPlayerId();
+            if (card.belongsToPlayer(player_id)) {
+                control.returnCardToHand(card);
+            }
+        }
+    }
+
+    public void moveCreature(Position start_position, Position end_position) {
+        Transform start_transform = findCardPositionGOinField(start_position);
+        Transform end_transform = findCardPositionGOinField(end_position);
+        Transform card_go = start_transform.GetChild(0);
+        card_go.SetParent(end_transform);
+    }
+
 
 
     /// <summary>
@@ -75,7 +95,7 @@ public class Field {
     /// <param name="pos">Posição da carta (linha, coluna) que será removida</param>
     public void removeCard(Position pos) {
         Transform transform = findCardPositionGOinField(pos);
-        CardInstance card_instance = this.findCardInstanceInTransform(transform);
+        CardGOInstance card_instance = this.findCardInstanceInTransform(transform);
 
         if (card_instance) {
             UnityEngine.Object.Destroy(card_instance.gameObject);
@@ -90,14 +110,14 @@ public class Field {
     /// <param name="card_position_transform"> GO que tem como filho um GO com informações da carta na posição específica</param>
     /// <returns>CardInstance da transform da posição da carta no campo. Null se não tiver cartas ali</returns>
     //
-    private CardInstance findCardInstanceInTransform(Transform card_position_transform) {
+    private CardGOInstance findCardInstanceInTransform(Transform card_position_transform) {
         //se não tiver filhos, não existe nenhuma carta nessa posição.
         if (card_position_transform.childCount <= 0)
             return null;
 
         Transform card_transform = card_position_transform.GetChild(0);
         if (card_transform) {
-            CardInstance card_instance = card_transform.GetComponent<CardInstance>();
+            CardGOInstance card_instance = card_transform.GetComponent<CardGOInstance>();
             if (card_instance)
                 return card_instance;
         }
@@ -138,26 +158,25 @@ public class Field {
     }
 
    
-    public void createCard(int id, int cost, int dmg, int life, Position pos, int player_id) {
-        Card card = new Card(id, "carta", "Personagem", cost, dmg, life, 0, 0);
+    public void createCard(int id, Position pos, int player_id) {
+        Card card = CardInstance.createCard(id);
         card.setPlayerId(player_id);
-
         card.setPosition(pos);
 
         Hand hand_reference = GameObject.FindGameObjectWithTag("Hand").GetComponent<Hand>();
         GameObject card_prefab = hand_reference.prefab;
 
         //instancia uma nova carta
-        GameObject go = (GameObject)UnityEngine.Object.Instantiate(card_prefab, Vector3.zero, new Quaternion(0, 0, 180, 0));
+        GameObject go = (GameObject)UnityEngine.Object.Instantiate(card_prefab, Vector3.zero, new Quaternion(0, 0, 0, 0));
 
         //acha o filho attackGO
         GameObject attackGO = go.transform.Find(cardGO_attack).gameObject;
-        changeGameObjectText(attackGO, dmg.ToString());
+        changeGameObjectText(attackGO, card.getActualAttack().ToString());
         
         GameObject lifeGO = go.transform.Find(cardGO_life).gameObject;
-        changeGameObjectText(lifeGO, life.ToString());
+        changeGameObjectText(lifeGO, card.getActualLife().ToString());
 
-        CardInstance card_instance = go.GetComponent<CardInstance>();
+        CardGOInstance card_instance = go.GetComponent<CardGOInstance>();
         card_instance.setCard(card);
         card_instance.setImage();
         card_instance.setFieldPosition(pos);

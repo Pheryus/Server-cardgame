@@ -18,7 +18,7 @@ public class EffectTargetUI : MonoBehaviour, IDropHandler {
         EffectArrowUI dragged_card = eventData.pointerDrag.GetComponent<EffectArrowUI>();
 
         if (dragged_card != null && control.isPlayerTurn()) {
-            Card card = dragged_card.GetComponent<CardInstance>().card;
+            Card card = dragged_card.GetComponent<CardGOInstance>().card;
             if (card.isMagic()) {
                 this.suffer_effect(card);
             }
@@ -28,7 +28,7 @@ public class EffectTargetUI : MonoBehaviour, IDropHandler {
 
     private void suffer_effect(Card card) {
 
-        Card target_card = GetComponent<CardInstance>().card;
+        Card target_card = GetComponent<CardGOInstance>().card;
         if (target_card == null)
             return;
 

@@ -13,22 +13,24 @@ public class Hand : MonoBehaviour {
             hand_cards.Add(cards[i]);
     }
 
-    public void AddCard(Card card) {
+
+    private void createTargetArrowUI(GameObject go) {
+        go.GetComponent<Draggable>().enabled = false;
+        go.GetComponent<EffectArrowUI>().enabled = true;
+    }
+
+    public void addCard(Card card) {
 
         GameObject go = (GameObject)Instantiate(prefab, Vector3.zero, Quaternion.identity);
 
-        //caso for a fireball
-        if (card.getID() == 6) {
-            go.GetComponent<Draggable>().enabled = false;
-            go.GetComponent<EffectArrowUI>().enabled = true;
-        }
+        if (card.onActivateEffect != null && card.onActivateEffect.id == 1) 
+            createTargetArrowUI(go);
         else
             go.GetComponent<EffectArrowUI>().enabled = false;
 
-
-        go.GetComponent<CardInstance>().setCard(card);
-        go.GetComponent<CardInstance>().setParent(this.gameObject.transform);
-        go.GetComponent<CardInstance>().setImage();
+        go.GetComponent<CardGOInstance>().setCard(card);
+        go.GetComponent<CardGOInstance>().setParent(this.gameObject.transform);
+        go.GetComponent<CardGOInstance>().setImage();
         go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
         hand_cards.Add(card);

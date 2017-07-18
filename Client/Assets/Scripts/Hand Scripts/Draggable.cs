@@ -29,7 +29,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     public void OnBeginDrag(PointerEventData eventData) {
         hand_index = transform.GetSiblingIndex();
         if (control != null) { 
-            Card c = gameObject.GetComponent<CardInstance>().card;
+            Card c = gameObject.GetComponent<CardGOInstance>().card;
 
             if (control.isPlayerTurn() == false)
                 return;

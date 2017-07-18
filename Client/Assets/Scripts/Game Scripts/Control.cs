@@ -14,7 +14,7 @@ public class Control {
     private LifeControl lifeControl;
     private ManaControl mana;
 
-    private EffectsControl effects;
+    private EffectsControl effects_control;
 
     private Serverino serverino;
     private BattleControl battleControl;
@@ -26,8 +26,8 @@ public class Control {
         return lifeControl;
     }
 
-    public void setOpponentMana(int mana) {
-        this.mana.setOpponentMana(mana);
+    public void reduceOpponentMana(int cost) {
+        this.mana.reduceOpponentMana(cost);
     }
 
     public ManaControl getMana() {
@@ -74,7 +74,7 @@ public class Control {
         this.battleControl = new BattleControl(this, field);
         this.lifeControl = new LifeControl(this);
         this.mana = new ManaControl(this);
-        this.effects = new EffectsControl(this);
+        this.effects_control = new EffectsControl(this);
 
 
         this.hand = GameObject.FindGameObjectWithTag("Hand").GetComponent<Hand>();
@@ -84,20 +84,24 @@ public class Control {
         return this.mana.checkIfItsPlayable(card);
     }
 
-    public void createCard(int id, int cost, int dmg, int life, Position pos) {
-
-        field.createCard(id, cost, dmg, life, pos, pos.side);
+    public void createCard(int id, int cost, Position pos) {
+        field.createCard(id, pos, pos.side);
     }
 
-    public void addCardToHand(int id, string type, int cost, int dmg, int life) {
-        Card card = new Card(id, "carta", type, cost, dmg, life, 1, 0);
+    public void moveCreature(Position start_position, Position end_position) {
+        field.moveCreature(start_position, end_position);
+    }
+
+
+    public void addCardToHand(int id) {
+        Card card = CardInstance.createCard(id);
         card.setPlayerId(this.player_id);
-        hand.AddCard(card);
+        hand.addCard(card);
     }
 
     public void returnCardToHand(Card card) {
         card.resetCard();
-        hand.AddCard(card);
+        hand.addCard(card);
     }
 
     public bool isPlayerTurn() {
@@ -137,17 +141,9 @@ public class Control {
     }
 
     public Card getCardById(int id) {
-        if (id == 5) {
-            Card card = new Card(id, "carta", "Magia", 7, -1, -1, 0, 0);
-            card.setPlayerId(player_id);
-            return card;
-        }
-         
-        else{ 
-            Card card = new Card(id, "carta", "Magia", 4, -1, -1, 0, 0 );
-            card.setPlayerId(player_id);
-            return card;
-        }
+        Card card = CardInstance.createCard(id);
+        card.setPlayerId(player_id);
+        return card;
     }
 
 
@@ -158,24 +154,34 @@ public class Control {
     /// <param name="card"></param>
     /// <param name="position"></param>
     public void playMagic(Card card, Position position = null) {
-        switch (card.getID()) {
-            case 5: {
-                    this.effects.boardclear(4);
-                    break;
-                }
 
-            case 6: {
-                    this.effects.damageToTargetPosition(position, 6);
+        if (card.onActivateEffect != null) {
+            Effects card_effect = card.onActivateEffect;
+
+            int id = card_effect.id;
+            switch (id) {
+                case 1: {
+                        effects_control.damageToTargetPosition(position, card_effect.dmg);
+                        break;
+                    }
+                case 2: {
+                        effects_control.damageToTargetPlayerField(player_turn, card_effect.dmg);
+                        break;
+                    }
+                case 3: 
+                    effects_control.damageToField(card_effect.dmg);
                     break;
-                }
-            default: {
-                    break;
-                }
+                       
+                    
+            }
+            this.field.check_board();
+            mana.spendMana(card.getCost());
+            card.resetCard();
+
         }
-
-        this.field.checkDeaths();
-        mana.spendMana(card.getCost());
-        card.resetCard();
+        else {
+            Debug.Log("Cagou tudo");
+        }
     }
 
 

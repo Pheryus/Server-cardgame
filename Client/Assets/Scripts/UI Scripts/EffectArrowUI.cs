@@ -18,13 +18,10 @@ public class EffectArrowUI : MonoBehaviour, IDragHandler, IEndDragHandler {
 
 
     public void OnDrag(PointerEventData eventData) {
-        Card card = transform.GetComponent<CardInstance>().card;
+        Card card = transform.GetComponent<CardGOInstance>().card;
         if (card != null && card.isMagic() && control.checkMana(card)) {
             this.magic(card);
         }
-
-
-
     }
 
     private void magic(Card magic) {

@@ -16,7 +16,7 @@ public class MagicZone : MonoBehaviour, IDropHandler {
 
         Draggable d = eventData.pointerDrag.GetComponent<Draggable>();
         if (d != null && d.canBeMoved == true && server.control.isPlayerTurn()) {
-            CardInstance cardInstance = eventData.pointerDrag.GetComponent<CardInstance>();
+            CardGOInstance cardInstance = eventData.pointerDrag.GetComponent<CardGOInstance>();
             Card card = cardInstance.card;
 
             if (card.isMagic()) {

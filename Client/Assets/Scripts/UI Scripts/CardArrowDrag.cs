@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CardArrowDrag : MonoBehaviour,IDragHandler, IEndDragHandler {
+public class CardArrowDrag : MonoBehaviour, IDragHandler, IEndDragHandler {
 
     public Shader lineShader;
 
     private Draggable draggable;
 
-    private CardInstance card_instance;
+    private CardGOInstance card_instance;
 
     private GameObject card_line;
 
@@ -17,7 +17,7 @@ public class CardArrowDrag : MonoBehaviour,IDragHandler, IEndDragHandler {
 
     private void Start() {
         draggable = transform.parent.GetComponent<Draggable>();
-        card_instance = transform.parent.GetComponent<CardInstance>();
+        card_instance = transform.parent.GetComponent<CardGOInstance>();
 
         this.control = GameObject.FindGameObjectWithTag("Control").GetComponent<Serverino>().control;
 
@@ -28,7 +28,9 @@ public class CardArrowDrag : MonoBehaviour,IDragHandler, IEndDragHandler {
             Destroy(card_line);
     }
 
+
     public void OnDrag(PointerEventData eventData) {
+
         Card card = card_instance.card;
         if (draggable.played == true  && card.canAttack() && this.control.isPlayerTurn()) {
             defineLine();

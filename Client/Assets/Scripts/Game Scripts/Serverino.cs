@@ -39,16 +39,16 @@ public class Serverino : MonoBehaviour {
     }
 
 
-    private void TryConnection(int attempts) {
+    private void tryConnection(int attempts) {
         client = new TcpClient();
 
-        var result = client.BeginConnect("127.0.0.1", 16000, null, null);
+        var result = client.BeginConnect("192.168.1.8", 16000, null, null);
         var sucess = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
         
         if (!sucess) {
             if (attempts < max_connection_attempts) { 
                 print("Failed to connect");
-                TryConnection(attempts + 1);
+                tryConnection(attempts + 1);
             }
             else {
                 Application.Quit();
@@ -62,7 +62,7 @@ public class Serverino : MonoBehaviour {
 
 	void Start () {
         DontDestroyOnLoad(this.gameObject);
-        TryConnection(0);
+        tryConnection(0);
         createStream();
  
 	}
@@ -119,6 +119,7 @@ public class Serverino : MonoBehaviour {
     }
         
     public void playerPlayCreature(Card card, Position position) {
+        card.onPlayEnter();
         control.spendMana(card.getCost());
     }
 
@@ -162,11 +163,12 @@ public class Serverino : MonoBehaviour {
     public bool tryAttackCharacter(int attacker_id, int target_id, Position attacker_pos, Position target_pos) {
         JSONObject message = JSONWriter.AttackCharacterJSON(attacker_id, target_id, attacker_pos, target_pos);
         send(message.ToString());
+        Debug.Log("Espera " + "Attack" + control.getPlayerId() + " ack");
         return readAck("Attack" + control.getPlayerId() + " ack");
     }
 
     public bool tryAttackPlayer(int attacker_id, Position attacker_pos) {
-        JSONObject message = JSONWriter.AttackPlayerJSON(attacker_id, attacker_pos);
+        JSONObject message = JSONWriter.attackPlayerJSON(attacker_id, attacker_pos);
         send(message.ToString());
         return readAck("Attack" + control.getPlayerId() + " ack");
     }
@@ -220,7 +222,6 @@ public class Serverino : MonoBehaviour {
 
 
     void parseData(string data) {
-        
         JSONObject json = new JSONObject(data);
         if (json.IsNull) {
             switch (data) {
@@ -263,20 +264,24 @@ public class Serverino : MonoBehaviour {
                 case "hand": {
                         if (state == STATE_WAITINGDECK) {
                             state = STATE_INGAME;
-                            SetHand((JSONObject)json.list[0]);
+                            this.setHand((JSONObject)json.list[0]);
                         }
                         break;
                     }
                 case "playcreature" : {
-                        EnemyPlayCharacter((JSONObject)json.list[0]);
+                        this.enemyPlayCharacter((JSONObject)json.list[0]);
                         break;
                     }
                 case "attack": {
-                        enemyAttack((JSONObject)json.list[0]);
+                        this.enemyAttack((JSONObject)json.list[0]);
                         break;
                     }
-                case "play magic": {
-                        enemyPlayMagic((JSONObject)json.list[0]);
+                case "playspell": {
+                        this.enemyPlayMagic((JSONObject)json.list[0]);
+                        break;
+                    }
+                case "movecreature": {
+                        this.enemyMoveCharacter((JSONObject)json.list[0]);
                         break;
                     }
             }
@@ -309,8 +314,7 @@ public class Serverino : MonoBehaviour {
 
         int target_id = (int)json.GetField("target_id").n;
         JSONObject position = json.GetField("attacker_position");
-        Position attacker_position = JSONReader.getPositionInstance(position, false);
-        attacker_position.side = control.getOpponentId();
+        Position attacker_position = JSONReader.getPositionInstance(position);
 
         Card attacker_card = control.getField().getCardByPosition(attacker_position);
         BattleControl battleControl = control.getBattleControl();
@@ -321,8 +325,7 @@ public class Serverino : MonoBehaviour {
         }
         else {
             JSONObject target_positionJSON = json.GetField("target_position");
-            Position target_position = JSONReader.getPositionInstance(target_positionJSON, false);
-            target_position.side = control.getPlayerId();
+            Position target_position = JSONReader.getPositionInstance(target_positionJSON);
 
             Card target_card = control.getField().getCardByPosition(target_position);
             battleControl.cardAttackCard(attacker_card, target_card);  
@@ -330,9 +333,37 @@ public class Serverino : MonoBehaviour {
 
     }
 
+    private void enemyMoveCharacter(JSONObject json) {
+        JSONObject start_position = json.GetField("start_position");
+        Position start_pos = JSONReader.getPositionInstance(start_position);
+
+        JSONObject end_position = json.GetField("end_position");
+        Position end_pos = JSONReader.getPositionInstance(end_position);
+
+        control.moveCreature(start_pos, end_pos);
 
 
-    void EnemyPlayCharacter(JSONObject json) {
+    }
+
+    /// <summary>
+    /// Função ainda em alfa.
+    /// </summary>
+    /// <param name="json"></param>
+    private void enemyPlayCharacter(JSONObject json) {
+        int id = (int)json.GetField("id").n;
+
+        JSONObject position = json.GetField("position");
+        Position pos = JSONReader.getPositionInstance(position);
+
+        int cost = (int)json.GetField("cost").n;
+        this.opponentPlayCreature(id, cost, pos);
+
+    }
+
+
+
+    /*
+    void enemyPlayCharacter(JSONObject json) {
         int id = (int)json.GetField("id").n;
         int player_id = (int)json.GetField("player_id").n;
         int hand_id = (int)json.GetField("hand_id").n;
@@ -347,13 +378,28 @@ public class Serverino : MonoBehaviour {
         int mana = (int)json.GetField("enemymana").n;
         opponentPlayCreature(mana, id, cost, dmg, life, pos);
     }
+    */
 
-    private void opponentPlayCreature(int mana, int id, int cost, int dmg, int life, Position pos) {
-        control.setOpponentMana(mana);
-        control.createCard(id, cost, dmg, life, pos);
+    private void opponentPlayCreature(int id, int cost, Position pos) {
+        control.reduceOpponentMana(cost);
+        control.createCard(id, cost, pos);
     }
 
-    void SetHand(JSONObject obj) {
+    public bool tryMoveCharacter(Card card, Position position) {
+        JSONObject message = JSONWriter.moveCharacterJSON(card, position);
+        send(message.ToString());
+        return readAck("Move" + control.getPlayerId() + " ack");
+    }
+
+
+    void setHand(JSONObject obj) {
+
+        int[] hand = { 0, 1, 2, 3, 10, 12, 8, 9, 13 };
+
+        foreach (int card in hand)
+            control.addCardToHand(card);
+
+        /*
         for (int i = 0; i < obj.list.Count; i++) {
             JSONObject card = (JSONObject)obj.list[i];
             
@@ -364,8 +410,7 @@ public class Serverino : MonoBehaviour {
             int dmg = -1;
             int life = -1;
 
-            //testa se é um personagem ou herói (contém dmg e life)
-            if (type.Equals("Personagem") || type.Equals("Herói")) {
+            if (type.Equals("Personagem")) {
                 JSONObject dmgJSON = card.GetField("dmg");
                 if (dmgJSON) 
                     dmg = (int)dmgJSON.n;
@@ -374,10 +419,11 @@ public class Serverino : MonoBehaviour {
                 if (lifeJSON)
                     life = (int)lifeJSON.n;
             }
-            control.addCardToHand(id, type, cost, dmg, life);
+            control.addCardToHand(id);
             
             
         }
+        */
     }
 
 
