@@ -32,7 +32,7 @@ public class CardArrowDrag : MonoBehaviour, IDragHandler, IEndDragHandler {
     public void OnDrag(PointerEventData eventData) {
 
         Card card = card_instance.card;
-        if (draggable.played == true  && card.canAttack() && this.control.isPlayerTurn()) {
+        if (draggable.played == true  && card.canAct() && this.control.isPlayerTurn()) {
             defineLine();
         }
     }

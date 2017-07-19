@@ -34,10 +34,6 @@ public class Hand : MonoBehaviour {
         go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
         hand_cards.Add(card);
-        for (int i=0; i < hand_cards.Count; i++) {
-            object obj = hand_cards[i];
-            Card card_in_hand = (Card)obj;
-        }
     }
 
     public void endTurn() {

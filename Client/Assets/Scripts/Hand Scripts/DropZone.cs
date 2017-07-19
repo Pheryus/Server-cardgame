@@ -38,36 +38,61 @@ public class DropZone : MonoBehaviour, IDropHandler {
         }
     }
 
-
-
     public int getPlayerId() {
         return server.control.getPlayerId();
     }
 
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="eventData"></param>
+    /// <param name="dragged_arrow"></param>
     public void moveCreature (PointerEventData eventData, CardArrowDrag dragged_arrow) {
         Card card = dragged_arrow.transform.parent.GetComponent<CardGOInstance>().card;
-        if (this.empty && card != null && card.isCreature() && card.canAttack()) {
+        if (card != null && card.isCreature() && card.canAct()) {
             Position field_position = getCardPosition(this.getPlayerId());
             Position card_position = card.getPosition();
+            Card other_card = null;
+
+            if (this.empty == false) { 
+                other_card = transform.GetChild(0).GetComponent<CardGOInstance>().card;
+                if (other_card.canAct() == false)
+                    return;
+            }
 
             if (this.movementIsValid(field_position, card_position) == false)
                 return;
 
-            if (server.tryMoveCharacter(card, field_position)) {
+            if (server.tryMoveCharacter(card, field_position)) { 
                 empty = false;
                 card.setPosition(field_position);
                 GameObject card_go = dragged_arrow.transform.parent.gameObject;
-                DropZone old_position = card_go.transform.parent.GetComponent<DropZone>();
-                card.setCanAttack(false);
-                old_position.empty = true;
+
+                Transform old_position_go = card_go.transform.parent;
+
+                DropZone old_position_dropzone = card_go.transform.parent.GetComponent<DropZone>();
+
+                if (other_card != null) {
+                    other_card.setPosition(card_position);
+                    other_card.setCanAct(false);
+                    transform.GetChild(0).SetParent(old_position_go);
+                }
+
+                card.setCanAct(false);
+                old_position_dropzone.empty = true;
                 card_go.transform.SetParent(transform);
+
             }
-
-            
         }
-
     }
 
+    /// <summary>
+    /// Checa se o personagem tenta se mover para uma posição adjacente a que se encontra.
+    /// </summary>
+    /// <param name="field_position">Posição que ele se move</param>
+    /// <param name="card_position">Posição que a carta se encontra</param>
+    /// <returns>true se a carta se moverá para uma posição adjacente</returns>
     public bool movementIsValid(Position field_position, Position card_position) {
         return (field_position.column == card_position.column && Mathf.Abs(field_position.line - card_position.line) == 1 ||
                     field_position.line == card_position.line && Mathf.Abs(field_position.column - card_position.column) == 1);

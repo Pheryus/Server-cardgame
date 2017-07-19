@@ -17,20 +17,18 @@ public class Card {
 
     public Effects onActivateEffect;
     
-
     private string name, type;
     
-    //actual status
     private int actual_damage, actual_life, siege_dmg;
 
 
-    private bool immuny, invisible, can_attack, can_attack_directly, ranged, charge;
+    private bool immuny, invisible, can_act, ranged, charge;
 
     private Position position;
 
     private int player_controller;
 
-    //construct
+
     public Card (int id, string name, string type, int cost, int damage, int life, int cooldown, int overcost) {
         this.id = id;
         this.cost = cost;
@@ -47,7 +45,10 @@ public class Card {
         this.invisible = false;
         this.actual_damage = this.attack.GetValueOrDefault();
         this.actual_life = this.life.GetValueOrDefault();
-        this.siege_dmg = 1;
+        if (this.attack > 0)
+            this.siege_dmg = 1;
+        else
+            this.siege_dmg = 0;
 
         this.type = type;
      
@@ -77,14 +78,17 @@ public class Card {
         return this.charge;
     }
 
+    /// <summary>
+    /// Efeito de carta que acontece quando uma criatura entra.
+    /// </summary>
     public void onPlayEnter() {
         if (this.hasCharge())
-            this.can_attack = true;
+            this.can_act = true;
     }
 
 
-    public bool canAttack() {
-        return can_attack;
+    public bool canAct() {
+        return can_act;
     }
     public Position getPosition() {
         return position;
@@ -107,29 +111,29 @@ public class Card {
         this.increaseCost();
     }
 
-    public bool canAttackDirectly() {
-        return this.can_attack_directly;
-    }
-
+    
+    /// <summary>
+    /// Função chamada se a carta se encontra na mão do player.
+    /// </summary>
     public void endOfTurnInHand() {
         if (this.actual_cooldown > 0) {
             this.actual_cooldown--; 
         }
     }
 
-    public bool canPlay() {
-        return this.actual_cooldown == 0;
+    public int getActualSiegeDmg() {
+        return this.siege_dmg;
     }
 
-    public void setCanAttackDirectly(bool attack_directly) {
-        this.can_attack_directly = attack_directly;
+    public bool canPlay() {
+        return this.actual_cooldown == 0;
     }
 
     private void resetStatus() {
         if (isCreature()) {
             this.actual_damage = (int)this.attack;
             this.actual_life = (int)this.life;
-            this.can_attack = false;
+            this.can_act = false;
         }
         this.actual_cooldown = this.cooldown;
     }
@@ -142,8 +146,8 @@ public class Card {
         this.position = position;
     }
 
-    public void setCanAttack (bool canattack) {
-        this.can_attack = canattack;
+    public void setCanAct (bool can_act) {
+        this.can_act = can_act;
     }
 
     public int getSiegeDmg() {

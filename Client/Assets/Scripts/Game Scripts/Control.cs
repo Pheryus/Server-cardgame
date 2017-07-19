@@ -16,7 +16,6 @@ public class Control {
 
     private EffectsControl effects_control;
 
-    private Serverino serverino;
     private BattleControl battleControl;
 
     private int player1_turns = 0;
@@ -67,12 +66,11 @@ public class Control {
         return field;
     }
 
-	public Control (Serverino server, int player_id) {
+	public Control (int player_id) {
         this.setPlayersIds(player_id);
-        this.serverino = server;
         this.field = new Field(this);
         this.battleControl = new BattleControl(this, field);
-        this.lifeControl = new LifeControl(this);
+        this.lifeControl = new LifeControl(player_id, opponent_id);
         this.mana = new ManaControl(this);
         this.effects_control = new EffectsControl(this);
 

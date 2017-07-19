@@ -26,7 +26,6 @@ public class Serverino : MonoBehaviour {
     public GameObject prefab;
     bool isConnected = false;
     private int temp_player_id;
-    bool waiting_ack = false;
 
     private const int max_connection_attempts = 5;
 
@@ -103,7 +102,7 @@ public class Serverino : MonoBehaviour {
     private void gameSceneLoaded() {
         //quer receber cartas da mao
         state = STATE_SENDMEDECK;
-        control = new Control(this, temp_player_id);
+        control = new Control(temp_player_id);
         temp_player_id = -1;
     }
 
@@ -163,7 +162,6 @@ public class Serverino : MonoBehaviour {
     public bool tryAttackCharacter(int attacker_id, int target_id, Position attacker_pos, Position target_pos) {
         JSONObject message = JSONWriter.AttackCharacterJSON(attacker_id, target_id, attacker_pos, target_pos);
         send(message.ToString());
-        Debug.Log("Espera " + "Attack" + control.getPlayerId() + " ack");
         return readAck("Attack" + control.getPlayerId() + " ack");
     }
 
@@ -211,7 +209,7 @@ public class Serverino : MonoBehaviour {
                 }
             }
             catch (Exception ex) {
-
+                //Debug.Log("Erro: " + ex);
             }
         }
         return "";

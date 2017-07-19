@@ -26,7 +26,6 @@ public class CardArrowDrop : MonoBehaviour, IDropHandler {
         int opponent_id = control.getOpponentId();
 
         if (gameObject.tag == "enemy") {
-
             if (battleControl.canAttackPlayer(attacker) && 
                     server.tryAttackPlayer(attacker.getID(), attacker.getPosition())) {
                 battleControl.directAttack(attacker, opponent_id);
@@ -40,14 +39,14 @@ public class CardArrowDrop : MonoBehaviour, IDropHandler {
             if (battleControl.canAttackCharacter(attacker, target) == false)
                 return;
 
-            attacker.setCanAttack(false);
+            attacker.setCanAct(false);
 
             bool can_attack_target = server.tryAttackCharacter(attacker.getID(), target.getID(), attacker.getPosition(), target.getPosition());
             if (can_attack_target) {
                 battleControl.cardAttackCard(attacker, target);
             }
             else
-                attacker.setCanAttack(true);
+                attacker.setCanAct(true);
         }
     }
 

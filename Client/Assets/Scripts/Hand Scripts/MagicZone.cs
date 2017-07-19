@@ -20,7 +20,6 @@ public class MagicZone : MonoBehaviour, IDropHandler {
             Card card = cardInstance.card;
 
             if (card.isMagic()) {
-                int player_side = card.getPlayerId();
                 if (server.tryPlayMagicWithoutTarget(card.getID())) {
                     server.control.playMagic(card);
                 }

@@ -79,10 +79,23 @@ public class Field {
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="start_position"></param>
+    /// <param name="end_position"></param>
     public void moveCreature(Position start_position, Position end_position) {
         Transform start_transform = findCardPositionGOinField(start_position);
         Transform end_transform = findCardPositionGOinField(end_position);
         Transform card_go = start_transform.GetChild(0);
+
+        card_go.GetComponent<CardGOInstance>().card.setPosition(end_position);
+
+        if (end_transform.childCount > 0) {
+            Transform other_card_go = end_transform.GetChild(0);
+            other_card_go.SetParent(start_transform);
+            other_card_go.GetComponent<CardGOInstance>().card.setPosition(start_position);
+        }
         card_go.SetParent(end_transform);
     }
 
