@@ -8,9 +8,10 @@ public class Field {
 
     private GameObject fieldGO;
     private Control control;
+    private int player_id;
 
     const string cardGO_attack = "attack", cardGO_life = "life";
-
+    private GameObject card_prefab;
 
     public GameObject getFieldGO() {
         return fieldGO;
@@ -23,7 +24,10 @@ public class Field {
 
     public Field(Control control) {
         this.control = control;
+        this.player_id = control.getPlayerId();
         fieldGO = GameObject.FindGameObjectWithTag("field");
+        Hand hand_reference = GameObject.FindGameObjectWithTag("Hand").GetComponent<Hand>();
+        card_prefab = hand_reference.prefab;
     }
 
     /// <summary>
@@ -53,7 +57,9 @@ public class Field {
         }
     }
 
-
+    /// <summary>
+    /// Avalia todas posições do campo, checando se morreu.
+    /// </summary>
     public void check_board() {
         for (int i=0; i < 2; i++)
             for (int j=0; j < 3; j++)
@@ -61,29 +67,34 @@ public class Field {
                     Position position = new Position(j, k, i);
                     Card card = getCardByPosition(position);
                     if (card != null) {
-                        this.check_death(card);
+                        this.kill_card(card);
                     }
                 }
     }
 
-
-    public void check_death(Card card) {
+    /// <summary>
+    /// Caso a carta esteja morta, remove ela do campo, remove sua posição, e retorna ela para o jogador caso pertença a ela.
+    /// </summary>
+    /// <param name="card">Carta a ser testada</param>
+    public void kill_card(Card card) {
         if (card.isDead()) {
             Position position = card.getPosition();
+            card.setPosition(null);
             this.removeCard(position);
             this.removeCardFromGameObject(position);
             int player_id = this.control.getPlayerId();
-            if (card.belongsToPlayer(player_id)) {
+            if (card.belongsToPlayer(player_id) && card.isReusable()) {
                 control.returnCardToHand(card);
             }
         }
     }
 
     /// <summary>
-    /// 
+    /// Move a carta de uma posição para outra.
+    /// Se a outra posição possuir uma carta também, as duas trocam de posições
     /// </summary>
-    /// <param name="start_position"></param>
-    /// <param name="end_position"></param>
+    /// <param name="start_position">Posição inicial da carta</param>
+    /// <param name="end_position">Posição final da carta</param>
     public void moveCreature(Position start_position, Position end_position) {
         Transform start_transform = findCardPositionGOinField(start_position);
         Transform end_transform = findCardPositionGOinField(end_position);
@@ -169,33 +180,39 @@ public class Field {
         card_arrow.GetComponent<CardArrowDrag>().destroyLine();
         UnityEngine.Object.Destroy(cardParentGO.transform.GetChild(0).gameObject);
     }
-
    
-    public void createCard(int id, Position pos, int player_id) {
-        Card card = CardInstance.createCard(id);
+    
+
+    public void createCard(Card card, Position pos, int player_id) {
+
+        if (getCardByPosition(pos) != null) {
+            Debug.Log("Erro! Já existe carta nessa posição");
+            return;
+        }
+
+
         card.setPlayerId(player_id);
-        card.setPosition(pos);
 
-        Hand hand_reference = GameObject.FindGameObjectWithTag("Hand").GetComponent<Hand>();
-        GameObject card_prefab = hand_reference.prefab;
+        //instância uma nova carta
+        GameObject card_go = (GameObject)UnityEngine.Object.Instantiate(card_prefab, Vector3.zero, new Quaternion(0, 0, 0, 0));
 
-        //instancia uma nova carta
-        GameObject go = (GameObject)UnityEngine.Object.Instantiate(card_prefab, Vector3.zero, new Quaternion(0, 0, 0, 0));
-
+        /*
         //acha o filho attackGO
-        GameObject attackGO = go.transform.Find(cardGO_attack).gameObject;
-        changeGameObjectText(attackGO, card.getActualAttack().ToString());
+        GameObject attackGO = card_go.transform.Find(cardGO_attack).gameObject;
+        //changeGameObjectText(attackGO, card.getActualAttack().ToString());
         
-        GameObject lifeGO = go.transform.Find(cardGO_life).gameObject;
-        changeGameObjectText(lifeGO, card.getActualLife().ToString());
+        GameObject lifeGO = card_go.transform.Find(cardGO_life).gameObject;
+        //changeGameObjectText(lifeGO, card.getActualLife().ToString());
+        */
 
-        CardGOInstance card_instance = go.GetComponent<CardGOInstance>();
+        CardGOInstance card_instance = card_go.GetComponent<CardGOInstance>();
+        card_instance.setControlReference();
         card_instance.setCard(card);
-        card_instance.setImage();
+        card_instance.setCardImage();
         card_instance.setFieldPosition(pos);
-        
-        go.AddComponent<CardArrowDrop>();
-        go.AddComponent<EffectTargetUI>();
+
+        card_go.AddComponent<CardArrowDrop>();
+        card_go.AddComponent<EffectTargetUI>();
     }
     
     //muda o text component do objeto

@@ -83,7 +83,8 @@ public class Control {
     }
 
     public void createCard(int id, int cost, Position pos) {
-        field.createCard(id, pos, pos.side);
+        Card card = CardInstance.createCard(id);
+        field.createCard(card, pos, opponent_id);
     }
 
     public void moveCreature(Position start_position, Position end_position) {
@@ -169,8 +170,9 @@ public class Control {
                 case 3: 
                     effects_control.damageToField(card_effect.dmg);
                     break;
-                       
-                    
+                case 4:
+                    effects_control.summonGoblins(player_turn);
+                    break; 
             }
             this.field.check_board();
             mana.spendMana(card.getCost());

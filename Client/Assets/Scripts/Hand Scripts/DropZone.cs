@@ -78,9 +78,11 @@ public class DropZone : MonoBehaviour, IDropHandler {
                     other_card.setCanAct(false);
                     transform.GetChild(0).SetParent(old_position_go);
                 }
+                else
+                    old_position_dropzone.empty = true;
 
                 card.setCanAct(false);
-                old_position_dropzone.empty = true;
+                
                 card_go.transform.SetParent(transform);
 
             }
@@ -94,8 +96,10 @@ public class DropZone : MonoBehaviour, IDropHandler {
     /// <param name="card_position">Posição que a carta se encontra</param>
     /// <returns>true se a carta se moverá para uma posição adjacente</returns>
     public bool movementIsValid(Position field_position, Position card_position) {
-        return (field_position.column == card_position.column && Mathf.Abs(field_position.line - card_position.line) == 1 ||
-                    field_position.line == card_position.line && Mathf.Abs(field_position.column - card_position.column) == 1);
+        int y = Mathf.Abs(field_position.line - card_position.line);
+        int x = Mathf.Abs(field_position.column - card_position.column);
+
+        return (x + y <= 2 && x <= 1 && y <= 1) && field_position != card_position;
     }
 
     public void setEmpty(bool empty) {
@@ -113,12 +117,13 @@ public class DropZone : MonoBehaviour, IDropHandler {
         if (card.isCreature() && server.tryPlayCharacter(card, field_position, d.hand_index)) {
             d.parentToReturnTo = this.transform;
             d.cardIs = "played";
-
             empty = false;
-            d.gameObject.transform.GetChild(0).gameObject.SetActive(true);
-            server.playerPlayCreature(card, field_position);
-            addCreatureAttributes(d.gameObject, card);
+
+            cardInstance.setFieldPosition(field_position);
             card.setPosition(field_position);
+            server.playerPlayCreature(card, field_position);
+            //addCreatureAttributes(d.gameObject, card);
+
         }
     }
 

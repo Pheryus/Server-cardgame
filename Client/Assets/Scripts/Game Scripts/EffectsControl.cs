@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -48,5 +49,22 @@ public class EffectsControl {
         this.field.damageToPosition(position, dmg);
 
     }
+
+    public void summonGoblins(int player_turn) {
+        for (int i = 0; i < 3; i++) {
+            Position goblin_position = new Position(i, 0, player_turn);
+            Card goblin_card = TokenCards.getMeleeGoblin();
+            goblin_card.setReusable(false);
+            this.field.createCard(goblin_card, goblin_position, player_turn);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            Position goblin_position = new Position(i, 1, player_turn);
+            Card goblin_card = TokenCards.getRangedGoblin();
+            this.field.createCard(goblin_card, goblin_position, player_turn);
+        }
+    }
+
+   
 
 }

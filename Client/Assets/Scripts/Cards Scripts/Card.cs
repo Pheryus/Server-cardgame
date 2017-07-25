@@ -22,12 +22,13 @@ public class Card {
     private int actual_damage, actual_life, siege_dmg;
 
 
-    private bool immuny, invisible, can_act, ranged, charge;
+    private bool immuny, invisible, can_act = false, ranged, charge;
 
     private Position position;
 
     private int player_controller;
 
+    private bool reusable = true;
 
     public Card (int id, string name, string type, int cost, int damage, int life, int cooldown, int overcost) {
         this.id = id;
@@ -52,6 +53,14 @@ public class Card {
 
         this.type = type;
      
+    }
+
+    public void setReusable(bool reusable) {
+        this.reusable = reusable;
+    }
+
+    public bool isReusable() {
+        return this.reusable;
     }
 
     public void setPlayerId(int player_id) {

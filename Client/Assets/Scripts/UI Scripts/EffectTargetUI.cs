@@ -20,13 +20,13 @@ public class EffectTargetUI : MonoBehaviour, IDropHandler {
         if (dragged_card != null && control.isPlayerTurn()) {
             Card card = dragged_card.GetComponent<CardGOInstance>().card;
             if (card.isMagic()) {
-                this.suffer_effect(card);
+                this.playMagic(card);
             }
         }
 
     }
 
-    private void suffer_effect(Card card) {
+    private void playMagic(Card card) {
 
         Card target_card = GetComponent<CardGOInstance>().card;
         if (target_card == null)

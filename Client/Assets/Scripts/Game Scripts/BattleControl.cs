@@ -80,8 +80,8 @@ public class BattleControl {
 
     public void cardAttackCard(Card attacker, Card target) {
         calculateBattle(attacker, target);
-        field.check_death(attacker);
-        field.check_death(target);
+        field.kill_card(attacker);
+        field.kill_card(target);
         attacker.setCanAct(false);
     }
 

@@ -225,7 +225,6 @@ public class Serverino : MonoBehaviour {
             switch (data) {
 
                 case "Conexao estabelecida - by server":  {
-                        Debug.Log("Recebi mensagem que estou em conectado");
                         break;
                     }
 
@@ -392,7 +391,7 @@ public class Serverino : MonoBehaviour {
 
     void setHand(JSONObject obj) {
 
-        int[] hand = { 0, 1, 2, 3, 10, 12, 8, 9, 13 };
+        int[] hand = { 0, 1, 2, 3, 10, 12, 8, 9, 13, 14 };
 
         foreach (int card in hand)
             control.addCardToHand(card);

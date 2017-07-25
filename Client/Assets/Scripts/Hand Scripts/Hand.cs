@@ -30,7 +30,7 @@ public class Hand : MonoBehaviour {
 
         go.GetComponent<CardGOInstance>().setCard(card);
         go.GetComponent<CardGOInstance>().setParent(this.gameObject.transform);
-        go.GetComponent<CardGOInstance>().setImage();
+        go.GetComponent<CardGOInstance>().setCardImage();
         go.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
         hand_cards.Add(card);

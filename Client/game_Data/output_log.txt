@@ -23,23 +23,19 @@ Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_
 Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GETween.dll into Unity Child Domain
 Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GUIAnimatorFREE.dll (this message is harmless)
 Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GUIAnimatorFREE.dll into Unity Child Domain
-- Completed reload, in  0.191 seconds
+- Completed reload, in  0.171 seconds
 Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\System.dll (this message is harmless)
 desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.108393 ms
-Recebi mensagem que estou em conectado
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
-
+UnloadTime: 1.045402 ms
 Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 5.309552 ms
+UnloadTime: 6.549824 ms
 
-Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 504.
-Total: 0.384772 ms (FindLiveObjects: 0.037856 ms CreateObjectMapping: 0.016445 ms MarkObjects: 0.325194 ms  DeleteObjects: 0.004344 ms)
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 505.
+Total: 0.364603 ms (FindLiveObjects: 0.036615 ms CreateObjectMapping: 0.020169 ms MarkObjects: 0.302232 ms  DeleteObjects: 0.004964 ms)
 
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 2eb0 -> priority: 1 
+  Thread -> id: 197c -> priority: 1 

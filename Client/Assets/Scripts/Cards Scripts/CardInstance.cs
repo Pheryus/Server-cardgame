@@ -26,6 +26,8 @@ public static class CardInstance {
                 return assassino_agil();
             case 13:
                 return arqueiro();
+            case 14:
+                return bando_de_goblins();
                 
             default:
                 return non_effect_card(id);
@@ -60,7 +62,11 @@ public static class CardInstance {
         return card;
     }
 
-    
+    public static Card bando_de_goblins() {
+        Card card = new Card(14, "Bando de Goblins", "Magia", 7, -1, -1, 1, 1);
+        card.onActivateEffect = new global::Effects(4);
+        return card;
+    }
 
     public static Card faisca() {
         Card card = new Card(11, "Faísca", "Magia", 2, -1, -1, 1, 0);
