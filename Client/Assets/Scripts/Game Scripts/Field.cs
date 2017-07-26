@@ -4,12 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public class line_column_tuple<T1, T2> {
+    public T1 Line { get; private set; }
+    public T2 Column { get; private set; }
+    internal line_column_tuple(T1 first, T2 second) {
+        Line = first;
+        Column = second;
+    }
+}
+
+
 public class Field {
 
     private GameObject fieldGO;
     private Control control;
     private int player_id;
-
+    private List<line_column_tuple < int, int>> all_positions;
     const string cardGO_attack = "attack", cardGO_life = "life";
     private GameObject card_prefab;
 
@@ -23,12 +33,26 @@ public class Field {
 
 
     public Field(Control control) {
+        this.all_positions = new List<line_column_tuple<int, int>>();
         this.control = control;
         this.player_id = control.getPlayerId();
+        this.definingPositions();
         fieldGO = GameObject.FindGameObjectWithTag("field");
         Hand hand_reference = GameObject.FindGameObjectWithTag("Hand").GetComponent<Hand>();
         card_prefab = hand_reference.prefab;
     }
+
+
+    /// <summary>
+    /// Cria uma lista de posições (linha, coluna) para percorrer mais fácil o campo
+    /// </summary>
+    private void definingPositions() {
+        for (int j = 0; j < 3; j++)
+            for (int k = 0; k < 2; k++) {
+                all_positions.Add(new line_column_tuple<int, int>(j, k));
+            }
+    }
+
 
     /// <summary>
     /// 
@@ -58,18 +82,19 @@ public class Field {
     }
 
     /// <summary>
-    /// Avalia todas posições do campo, checando se morreu.
+    /// Avalia todas posições do campo, checando se o personagem morreu.
     /// </summary>
     public void check_board() {
-        for (int i=0; i < 2; i++)
-            for (int j=0; j < 3; j++)
-                for (int k = 0; k < 2; k++) {
-                    Position position = new Position(j, k, i);
-                    Card card = getCardByPosition(position);
-                    if (card != null) {
-                        this.kill_card(card);
-                    }
+        for (int i = 0; i < 2; i++) {
+            foreach (line_column_tuple<int, int> tuple in all_positions) {
+                Position position = new Position(tuple.Line, tuple.Column, i);
+                Card card = getCardByPosition(position);
+                if (card != null) {
+                    this.kill_card(card);
                 }
+            }
+        }
+
     }
 
     /// <summary>
@@ -83,11 +108,28 @@ public class Field {
             this.removeCard(position);
             this.removeCardFromGameObject(position);
             int player_id = this.control.getPlayerId();
-            if (card.belongsToPlayer(player_id) && card.isReusable()) {
-                control.returnCardToHand(card);
+
+            if (card.belongsToPlayer(player_id)) {
+                this.checkOnAlliesDeathEffects(position.side);
+                if (card.isReusable())
+                    control.returnCardToHand(card);
             }
+
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="player_side"></param>
+    private void checkOnAlliesDeathEffects(int player_side) {
+        foreach(line_column_tuple<int, int> tuple in all_positions) {
+            Position position = new Position(tuple.Line, tuple.Column, player_side);
+            Card card = getCardByPosition(position);
+        }
+    }
+
+
 
     /// <summary>
     /// Move a carta de uma posição para outra.
@@ -181,35 +223,28 @@ public class Field {
         UnityEngine.Object.Destroy(cardParentGO.transform.GetChild(0).gameObject);
     }
    
+    private string getGameObjectCardPosition(Position position) {
+        return findCardPositionGOinField(position).name;
+    }
     
 
     public void createCard(Card card, Position pos, int player_id) {
 
         if (getCardByPosition(pos) != null) {
-            Debug.Log("Erro! Já existe carta nessa posição");
             return;
         }
-
 
         card.setPlayerId(player_id);
 
         //instância uma nova carta
         GameObject card_go = (GameObject)UnityEngine.Object.Instantiate(card_prefab, Vector3.zero, new Quaternion(0, 0, 0, 0));
 
-        /*
-        //acha o filho attackGO
-        GameObject attackGO = card_go.transform.Find(cardGO_attack).gameObject;
-        //changeGameObjectText(attackGO, card.getActualAttack().ToString());
-        
-        GameObject lifeGO = card_go.transform.Find(cardGO_life).gameObject;
-        //changeGameObjectText(lifeGO, card.getActualLife().ToString());
-        */
-
         CardGOInstance card_instance = card_go.GetComponent<CardGOInstance>();
         card_instance.setControlReference();
         card_instance.setCard(card);
         card_instance.setCardImage();
-        card_instance.setFieldPosition(pos);
+        string go_name = this.getGameObjectCardPosition(pos);
+        card_instance.setFieldPosition(go_name, pos);
 
         card_go.AddComponent<CardArrowDrop>();
         card_go.AddComponent<EffectTargetUI>();

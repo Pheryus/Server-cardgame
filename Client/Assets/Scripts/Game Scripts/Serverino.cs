@@ -8,6 +8,14 @@ using System.IO;
 using System.Text;
 using UnityEngine.SceneManagement;
 
+public static class GetServerino {
+
+    public static Serverino getServerino() {
+        return GameObject.FindGameObjectWithTag("Control").GetComponent<Serverino>();
+    }
+}
+
+
 public class Serverino : MonoBehaviour {
 
     private NetworkStream stream;

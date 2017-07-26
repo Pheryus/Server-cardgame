@@ -10,9 +10,9 @@ public static class JSONReader {
         int column = (int)positionJSON.GetField("column").n;
         if (hasSide) { 
             int side = (int)positionJSON.GetField("side").n;
-            return new Position(column, line, side);
+            return new Position(line, column, side);
         }
-        return new Position(column, line);
+        return new Position(line, column);
 
     }
 

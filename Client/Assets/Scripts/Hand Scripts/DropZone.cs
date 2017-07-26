@@ -20,7 +20,7 @@ public class DropZone : MonoBehaviour, IDropHandler {
     }
 
     private Position getCardPosition(int player_side) {
-        return new Position(x, y, player_side);
+        return new Position(y, x, player_side);
     }
 
     public void OnDrop(PointerEventData eventData) {
@@ -119,8 +119,7 @@ public class DropZone : MonoBehaviour, IDropHandler {
             d.cardIs = "played";
             empty = false;
 
-            cardInstance.setFieldPosition(field_position);
-            card.setPosition(field_position);
+            cardInstance.setFieldPosition(transform.name, field_position);
             server.playerPlayCreature(card, field_position);
             //addCreatureAttributes(d.gameObject, card);
 

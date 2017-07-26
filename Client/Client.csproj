@@ -97,12 +97,13 @@
     <Compile Include="Assets\GUI Animator\GUI Animator FREE\Demo (CSharp)\Scripts\GA_FREE_DemoPlaySound.cs" />
     <Compile Include="Assets\GUI Animator\GUI Animator FREE\Demo (CSharp)\Scripts\GA_FREE_OpenOtherScene.cs" />
     <Compile Include="Assets\GUI Animator\GUI Animator FREE\Demo Basic (CSharp)\Scripts\GUIAnimatorFREEDemo.cs" />
+    <Compile Include="Assets\Scripts\Cards Scripts\ActiveEffects.cs" />
     <Compile Include="Assets\Scripts\Cards Scripts\Card.cs" />
     <Compile Include="Assets\Scripts\Cards Scripts\CardGOInstance.cs" />
     <Compile Include="Assets\Scripts\Cards Scripts\CardInstance.cs" />
-    <Compile Include="Assets\Scripts\Cards Scripts\Effects.cs" />
     <Compile Include="Assets\Scripts\Cards Scripts\Position.cs" />
     <Compile Include="Assets\Scripts\Cards Scripts\TokenCards.cs" />
+    <Compile Include="Assets\Scripts\Cards Scripts\TriggerEffects.cs" />
     <Compile Include="Assets\Scripts\Game Scripts\BattleControl.cs" />
     <Compile Include="Assets\Scripts\Game Scripts\Control.cs" />
     <Compile Include="Assets\Scripts\Game Scripts\EffectsControl.cs" />

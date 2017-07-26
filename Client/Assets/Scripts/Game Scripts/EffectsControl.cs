@@ -21,7 +21,7 @@ public class EffectsControl {
         for (int i = 0; i < 2; i++) 
             for (int j = 0; j < 3; j++) 
                 for (int k = 0; k < 2; k++) { 
-                    Position position = new Position(j, k, i);
+                    Position position = new Position(k, j, i);
                     this.field.damageToPosition(position, dmg);
                 }
     }
@@ -34,7 +34,7 @@ public class EffectsControl {
     public void damageToTargetPlayerField (int player_id, int dmg) {
         for (int i = 0; i < 2; i++)
             for (int j = 0; j < 3; j++) {
-                Position position = new Position(i, j, player_id);
+                Position position = new Position(j, i, player_id);
                 this.field.damageToPosition(position, dmg);
             }
     }
@@ -52,14 +52,13 @@ public class EffectsControl {
 
     public void summonGoblins(int player_turn) {
         for (int i = 0; i < 3; i++) {
-            Position goblin_position = new Position(i, 0, player_turn);
+            Position goblin_position = new Position(0, i, player_turn);
             Card goblin_card = TokenCards.getMeleeGoblin();
-            goblin_card.setReusable(false);
             this.field.createCard(goblin_card, goblin_position, player_turn);
         }
 
         for (int i = 0; i < 3; i++) {
-            Position goblin_position = new Position(i, 1, player_turn);
+            Position goblin_position = new Position(1, i, player_turn);
             Card goblin_card = TokenCards.getRangedGoblin();
             this.field.createCard(goblin_card, goblin_position, player_turn);
         }

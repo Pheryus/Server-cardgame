@@ -3,24 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public interface ICommand {
-    void execute(object param);
-}
-
+/// <summary>
+/// Classe que define todas informações de cada carta
+/// </summary>
 public class Card {
 
     private const string characterType = "Personagem";
 
     private int id, cost, overcost = 0, cooldown = 1, actual_cooldown;
     private int? attack, life;
-    public int original_cost;   
+    public int original_cost;
 
-    public Effects onActivateEffect;
+    public ActiveEffects onActivateEffect;
+    public TriggerEffects onTriggerEffect;
     
     private string name, type;
     
     private int actual_damage, actual_life, siege_dmg;
-
 
     private bool immuny, invisible, can_act = false, ranged, charge;
 

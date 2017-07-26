@@ -155,7 +155,7 @@ public class Control {
     public void playMagic(Card card, Position position = null) {
 
         if (card.onActivateEffect != null) {
-            Effects card_effect = card.onActivateEffect;
+            ActiveEffects card_effect = card.onActivateEffect;
 
             int id = card_effect.id;
             switch (id) {
@@ -178,9 +178,6 @@ public class Control {
             mana.spendMana(card.getCost());
             card.resetCard();
 
-        }
-        else {
-            Debug.Log("Cagou tudo");
         }
     }
 

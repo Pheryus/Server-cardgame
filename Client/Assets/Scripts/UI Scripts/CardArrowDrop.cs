@@ -11,12 +11,10 @@ public class CardArrowDrop : MonoBehaviour, IDropHandler {
 
     Serverino server;
 
-    public void getControlInstance() {
-        server = GameObject.FindGameObjectWithTag("Control").GetComponent<Serverino>();
-    }
+
 
     private void Start() {
-        this.getControlInstance();
+        server = GetServerino.getServerino();
     }
 
 
@@ -39,14 +37,10 @@ public class CardArrowDrop : MonoBehaviour, IDropHandler {
             if (battleControl.canAttackCharacter(attacker, target) == false)
                 return;
 
-            attacker.setCanAct(false);
-
             bool can_attack_target = server.tryAttackCharacter(attacker.getID(), target.getID(), attacker.getPosition(), target.getPosition());
             if (can_attack_target) {
                 battleControl.cardAttackCard(attacker, target);
             }
-            else
-                attacker.setCanAct(true);
         }
     }
 
@@ -57,7 +51,7 @@ public class CardArrowDrop : MonoBehaviour, IDropHandler {
             
             Card card = dragged_card.transform.parent.GetComponent<CardGOInstance>().card;
 
-            if (card.isCreature()) {
+            if (card.isCreature() && card.canAct()) {
                 this.attack(card);
             }
         }

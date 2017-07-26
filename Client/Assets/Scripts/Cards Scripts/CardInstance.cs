@@ -28,10 +28,18 @@ public static class CardInstance {
                 return arqueiro();
             case 14:
                 return bando_de_goblins();
-                
+            case 17:
+                return covarde();
             default:
                 return non_effect_card(id);
         }
+    }
+
+    public static Card covarde() {
+        Card card = new global::Card(17, "Covarde", "Personagem", 3, 5, 5, 1, 0);
+        card.onTriggerEffect = new TriggerEffects(1, 1);
+
+        return card;
     }
 
     public static Card non_effect_card(int id) {
@@ -51,7 +59,7 @@ public static class CardInstance {
 
     public static Card bola_de_fogo() {
         Card card = new Card(10, "Bola de Fogo", "Magia", 4, -1, -1, 2, 1);
-        card.onActivateEffect = new Effects(1);
+        card.onActivateEffect = new ActiveEffects(1);
         card.onActivateEffect.dmg = 5;
         return card;
     }
@@ -64,27 +72,27 @@ public static class CardInstance {
 
     public static Card bando_de_goblins() {
         Card card = new Card(14, "Bando de Goblins", "Magia", 7, -1, -1, 1, 1);
-        card.onActivateEffect = new global::Effects(4);
+        card.onActivateEffect = new global::ActiveEffects(4);
         return card;
     }
 
     public static Card faisca() {
         Card card = new Card(11, "Faísca", "Magia", 2, -1, -1, 1, 0);
-        card.onActivateEffect = new Effects(1);
+        card.onActivateEffect = new ActiveEffects(1);
         card.onActivateEffect.dmg = 1;
         return card;
     }
 
     public static Card nevasca() {
         Card card = new Card(9, "Nevasca", "Magia", 4, -1, -1, 2, 1);
-        card.onActivateEffect = new Effects(3);
+        card.onActivateEffect = new ActiveEffects(3);
         card.onActivateEffect.dmg = 2;
         return card;
     }
 
     public static Card flamestrike() {
         Card card = new Card(5, "Flamestrike", "Magia", 7, -1, -1, 1, 0);
-        card.onActivateEffect = new Effects(2);
+        card.onActivateEffect = new ActiveEffects(2);
         card.onActivateEffect.dmg = 4;
         return card;
     }

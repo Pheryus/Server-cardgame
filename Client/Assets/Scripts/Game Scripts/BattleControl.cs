@@ -41,7 +41,7 @@ public class BattleControl {
         else if (!attacker.isRange() && attacker_position.line == 1)
             return false;
 
-        Position front_creature = new Position(2 - attacker_position.column, 0, 1 - attacker_position.side);
+        Position front_creature = new Position(0, 2 - attacker_position.column, 1 - attacker_position.side);
 
         if (field.getCardByPosition(front_creature) == null) {
             return true;
@@ -63,7 +63,7 @@ public class BattleControl {
         if (target_position.line == 0)
             return true;
         else {
-            Position front_creature = new Position(target_position.column, 0, target_position.side);
+            Position front_creature = new Position(0, target_position.column, target_position.side);
             if (target_position.column == attacker_position.column && field.getCardByPosition(front_creature) == null)
                 return true;
         }

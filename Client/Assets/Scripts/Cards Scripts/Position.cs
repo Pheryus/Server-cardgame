@@ -6,7 +6,7 @@ public class Position {
     public int side;
 
 
-	public Position (int column, int line, int side = -1){
+	public Position(int line, int column, int side = -1) {
 		this.column = column;
 		this.line = line;
         this.side = side;

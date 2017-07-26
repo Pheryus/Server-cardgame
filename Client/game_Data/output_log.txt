@@ -23,19 +23,19 @@ Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_
 Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GETween.dll into Unity Child Domain
 Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GUIAnimatorFREE.dll (this message is harmless)
 Loading C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\GUIAnimatorFREE.dll into Unity Child Domain
-- Completed reload, in  0.171 seconds
+- Completed reload, in  0.722 seconds
 Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Pedro\Meus jogos\Server Unity\Server-cardgame\Client\game_Data\Managed\System.dll (this message is harmless)
 desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.045402 ms
+UnloadTime: 23.949926 ms
 Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 6.549824 ms
+UnloadTime: 9.382868 ms
 
-Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 505.
-Total: 0.364603 ms (FindLiveObjects: 0.036615 ms CreateObjectMapping: 0.020169 ms MarkObjects: 0.302232 ms  DeleteObjects: 0.004964 ms)
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 506.
+Total: 2.558117 ms (FindLiveObjects: 0.044683 ms CreateObjectMapping: 0.028857 ms MarkObjects: 2.475888 ms  DeleteObjects: 0.008067 ms)
 
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 197c -> priority: 1 
+  Thread -> id: b5c -> priority: 1 
