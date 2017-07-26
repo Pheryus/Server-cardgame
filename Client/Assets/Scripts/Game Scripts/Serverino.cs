@@ -9,7 +9,6 @@ using System.Text;
 using UnityEngine.SceneManagement;
 
 public static class GetServerino {
-
     public static Serverino getServerino() {
         return GameObject.FindGameObjectWithTag("Control").GetComponent<Serverino>();
     }

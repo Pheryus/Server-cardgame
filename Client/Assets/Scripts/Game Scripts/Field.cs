@@ -55,11 +55,11 @@ public class Field {
 
 
     /// <summary>
-    /// 
-    /// 
+    /// Dada a posição pos, obtém-se a instância da carta.
+    /// Para isso, é necessário encontrar o go que possui a CardGOInstance, e retornar seu atributo card.
     /// </summary>
-    /// <param name="pos"></param>
-    /// <returns></returns>
+    /// <param name="pos">Posição que se deseja saber a carta </param>
+    /// <returns>Instância da carta da posição. Null se ela não existir</returns>
     public Card getCardByPosition(Position pos) {
         Transform card_position_transform = findCardPositionGOinField(pos);
         CardGOInstance card_instance = findCardInstanceInTransform(card_position_transform);
@@ -70,10 +70,8 @@ public class Field {
 
 
     /// <summary>
-    /// Causa dano ao personagem na posição alvo. Caso não exista personagem, nenhum dano é causado.
-    /// </summary>
-    /// <param name="pos"></param>
-    /// <param name="dmg"></param>
+    /// Causa dano ao personagem na posição alvo.
+    /// </summary
     public void damageToPosition (Position pos, int dmg) {
         Card card = this.getCardByPosition(pos);
         if (card != null) {
@@ -82,13 +80,14 @@ public class Field {
     }
 
     /// <summary>
-    /// Avalia todas posições do campo, checando se o personagem morreu.
+    /// Avalia todas posições do campo, checando se o personagem de carta posição está morto.
+    /// Se está morto, a função kill_card é chamada.
     /// </summary>
     public void check_board() {
         for (int i = 0; i < 2; i++) {
             foreach (line_column_tuple<int, int> tuple in all_positions) {
                 Position position = new Position(tuple.Line, tuple.Column, i);
-                Card card = getCardByPosition(position);
+                Card card = this.getCardByPosition(position);
                 if (card != null) {
                     this.kill_card(card);
                 }
@@ -126,6 +125,9 @@ public class Field {
         foreach(line_column_tuple<int, int> tuple in all_positions) {
             Position position = new Position(tuple.Line, tuple.Column, player_side);
             Card card = getCardByPosition(position);
+            if (card.onTriggerEffect.condition_id == 1) {
+
+            }
         }
     }
 
