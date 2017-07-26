@@ -126,7 +126,8 @@ public class Field {
             Position position = new Position(tuple.Line, tuple.Column, player_side);
             Card card = getCardByPosition(position);
             if (card.onTriggerEffect.condition_id == 1) {
-
+                int trigger_id = card.onTriggerEffect.effect_id;
+                control.getEffectsControl().applyTriggerEffect(card, trigger_id);
             }
         }
     }

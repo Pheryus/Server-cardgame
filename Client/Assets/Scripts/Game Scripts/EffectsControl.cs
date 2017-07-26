@@ -64,6 +64,20 @@ public class EffectsControl {
         }
     }
 
-   
+    public void changeFieldSide(Card card) {
+        Position card_position = card.getPosition();
+        int opposite_side = (card_position.side + 1) % 2;
+        Position opposite_position = new Position(card_position.line, card_position.column, opposite_side);
+        if (field.getCardByPosition(opposite_position) == null) {
+            /// a continuar
+        }
+    }
 
+    public void applyTriggerEffect(Card card, int trigger_id) {
+        switch (trigger_id) {
+            case 1: 
+                this.changeFieldSide(card);
+                break;
+        }
+    }
 }

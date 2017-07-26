@@ -4,35 +4,6 @@ using UnityEngine;
 
 public static class JSONWriter {
 
-    /*
-	"playspell" : {
-		"id" : magic_id,
-		"position" : {
-			"line" : line,
-			"column" : column
-		}
-	}
-	*/
-
-    /*
-	Padrão JSON de ataque
-
-	"attack" : {
-		"attacker_id" : attacker_id,
-		"target_id" : target_id,
-		"attacker_position" : {
-            "side" : side,
-			"line" : line,
-			"column" : column
-		},
-		"target_position" : {
-			"line" : line,
-			"column" : column
-		}	
-	}
-
-	*/
-
     static public JSONObject moveCharacterJSON(Card card, Position position) {
         JSONObject json = new JSONObject();
         json.AddField("start_position", setTarget(card.getPosition()));
